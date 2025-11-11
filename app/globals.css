@@ -4,26 +4,13 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
-  --secondary: #f3f4f6;
-  --border: #e5e7eb;
-  --user-message: #6366f1;
-  --assistant-message: #f9fafb;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --secondary: #1f1f1f;
-    --border: #2a2a2a;
-    --user-message: #6366f1;
-    --assistant-message: #1f1f1f;
-  }
+  --foreground: #1a1a1a;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #f8fafc;
+  --border: #e2e8f0;
+  --user-message: #eff6ff;
+  --assistant-message: #f8fafc;
 }
 
 * {
@@ -59,16 +46,16 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--secondary);
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #94a3b8;
 }
 
 /* Message animations */
@@ -85,16 +72,4 @@ a {
 
 .message-animate {
   animation: messageSlideIn 0.3s ease-out;
-}
-
-/* Gradient background */
-.gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
