@@ -44,7 +44,7 @@ const searchCategories = [
   {
     icon: PlaneTakeoff,
     title: 'Absence Requests',
-    description: 'Request vacation and manage time off',
+    description: 'Request vacation or other type of absence',
     iconBgColor: 'bg-pink-600/10',
     iconColor: 'text-pink-600',
   },
