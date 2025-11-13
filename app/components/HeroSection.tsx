@@ -50,8 +50,8 @@ const searchCategories = [
   },
   {
     icon: Calendar,
-    title: 'Company Info',
-    description: 'Access company policies, events, and resources',
+    title: 'Employee Handbook',
+    description: 'Access workplace policies, benefits, and guidelines',
     iconBgColor: 'bg-indigo-600/10',
     iconColor: 'text-indigo-600',
   },
@@ -79,10 +79,10 @@ export default function HeroSection() {
                   'kudos 💰',
                   'vacation 🏖️',
                   'policies 📋',
-                  'company info 🏢',
+                  'handbook 📖',
                   'employees 👨‍💼',
                   'time off 🌴',
-                  'processes ⚙️',
+                  'benefits 🎁',
                 ]}
                 mainClassName="overflow-hidden pr-3 text-blue-600 py-0 pb-2 md:pb-4 rounded-xl"
                 staggerDuration={0.03}

@@ -74,16 +74,16 @@ The user is asking about requesting vacation or time off, managing PTO (Paid Tim
 
 ---
 
-## 6. Routing Agent → Company Info Agent
+## 6. Routing Agent → Employee Handbook Agent
 
 **Label:**
 ```
-Route to Company Info
+Route to Employee Handbook
 ```
 
 **LLM Condition:**
 ```
-The user is asking about company policies, upcoming events, company resources, general company information, organizational structure, company culture, benefits, or other general information about Visma.
+The user is asking about workplace policies, benefits, health insurance, remote work guidelines, office rules, security policies, working hours, salary information, well-being programs, parking, office facilities, communication tools, or other information from the employee handbook.
 ```
 
 ---
@@ -92,7 +92,7 @@ The user is asking about company policies, upcoming events, company resources, g
 
 - Each LLM condition is written as a natural language description that the AI will evaluate
 - The conditions cover the key scenarios mentioned in the routing agent's conversation goal
-- There may be some overlap between categories (e.g., "company policies" could be Documents or Company Info)
+- There may be some overlap between categories (e.g., "workplace policies" could be Documents or Employee Handbook)
 - The routing agent will use these conditions to determine the best match based on user intent
 - If multiple conditions could match, the routing agent should choose the most specific one
 
@@ -105,4 +105,4 @@ Test each route with example user queries:
 3. **People**: "Who on our team knows React?"
 4. **Kudos Calculator**: "How much kudos budget do I have left?"
 5. **Absence Requests**: "I need to request time off next week"
-6. **Company Info**: "What company events are coming up?"
+6. **Employee Handbook**: "What are our remote work policies?"
