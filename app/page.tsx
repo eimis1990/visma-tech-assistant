@@ -2,25 +2,16 @@
 
 import LandingHeader from './components/LandingHeader'
 import HeroSection from './components/HeroSection'
-
-// Declare the custom element for TypeScript
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'elevenlabs-convai': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          'agent-id': string
-        },
-        HTMLElement
-      >
-    }
-  }
-}
+import ElevenLabsWidget from './components/ElevenLabsWidget'
+import DocumentDrawer from '@/components/DocumentDrawer'
+import { useElevenLabsTools } from '@/hooks/useElevenLabsTools'
 
 export default function Home() {
+  const { documentData, isDrawerOpen, closeDrawer } = useElevenLabsTools()
+
   return (
     <div className="min-h-screen w-full relative">
-      {/* Dashed Top Fade Grid */}
+      {/* Dashed Bottom Fade Grid */}
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -31,7 +22,7 @@ export default function Home() {
           backgroundSize: "20px 20px",
           backgroundPosition: "0 0, 0 0",
           maskImage: `
-            repeating-linear-gradient(
+             repeating-linear-gradient(
               to right,
               black 0px,
               black 3px,
@@ -45,10 +36,10 @@ export default function Home() {
               transparent 3px,
               transparent 8px
             ),
-            radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)
+            radial-gradient(ellipse 100% 80% at 50% 100%, #000 50%, transparent 90%)
           `,
           WebkitMaskImage: `
-            repeating-linear-gradient(
+  repeating-linear-gradient(
               to right,
               black 0px,
               black 3px,
@@ -62,7 +53,7 @@ export default function Home() {
               transparent 3px,
               transparent 8px
             ),
-            radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)
+            radial-gradient(ellipse 100% 80% at 50% 100%, #000 50%, transparent 90%)
           `,
           maskComposite: "intersect",
           WebkitMaskComposite: "source-in",
@@ -78,8 +69,18 @@ export default function Home() {
         </main>
 
         {/* ElevenLabs Widget - will appear in bottom right corner */}
-        <elevenlabs-convai agent-id="agent_6701k9ma25k6e6ct0y27575m5s0w" />
+        <ElevenLabsWidget agentId="agent_6701k9ma25k6e6ct0y27575m5s0w" />
       </div>
+
+      {/* Document Drawer - appears when agent triggers open_document tool */}
+      {documentData && (
+        <DocumentDrawer
+          isOpen={isDrawerOpen}
+          onClose={closeDrawer}
+          title={documentData.title}
+          documentUrl={documentData.url}
+        />
+      )}
     </div>
   )
 }

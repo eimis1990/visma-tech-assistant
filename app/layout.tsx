@@ -5,6 +5,10 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Visma Tech Assistant',
   description: 'AI-powered RAG assistant for finding information',
+  icons: {
+    icon: '/vtech-logo.png',
+    apple: '/vtech-logo.png',
+  },
 }
 
 export default function RootLayout({
