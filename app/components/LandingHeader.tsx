@@ -7,15 +7,15 @@ import { UserMenu } from '@/components/UserMenu'
 import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
-const VismaTechLogo = ({ className }: { className?: string }) => {
+const ViTechLogo = ({ className }: { className?: string }) => {
   return (
     <div className={cn('flex items-center gap-3', className)}>
       <img
         src="/vtech-logo.png"
-        alt="VismaTech Logo"
+        alt="ViTech Logo"
         className="h-10 w-auto"
       />
-      <span className="text-2xl font-bold text-black">VISMATECH</span>
+      <span className="text-4xl font-medium text-black" style={{ fontFamily: 'Outfit, sans-serif' }}>vitech</span>
     </div>
   )
 }
@@ -52,7 +52,7 @@ export default function LandingHeader() {
     <header className="fixed z-50 w-full pt-6" style={{ zIndex: 60 }}>
       <div className="flex items-center justify-between w-full px-[50px]">
         {/* Logo - Left Side */}
-        <VismaTechLogo />
+        <ViTechLogo />
 
         {/* Auth Section - Right Side */}
         <div>

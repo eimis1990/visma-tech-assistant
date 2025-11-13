@@ -63,6 +63,7 @@ export default function HeroSection() {
       <div className="flex flex-col justify-center items-center w-[250px] sm:w-[300px] md:w-[500px] lg:w-[700px] z-50 pointer-events-auto mb-12">
         <motion.h1
           className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-bold tracking-tight space-y-1 md:space-y-4"
+          style={{ fontFamily: 'Outfit, sans-serif' }}
           animate={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2, ease: 'easeOut', delay: 0.3 }}
@@ -93,7 +94,8 @@ export default function HeroSection() {
           </LayoutGroup>
         </motion.h1>
         <motion.p
-          className="text-sm sm:text-lg md:text-xl lg:text-2xl text-center pt-3 sm:pt-4 md:pt-6 lg:pt-8 text-black font-medium"
+          className="text-sm sm:text-lg md:text-xl lg:text-1xl text-center pt-3 sm:pt-4 md:pt-6 lg:pt-8 text-black font-medium"
+          style={{ fontFamily: 'Outfit, sans-serif' }}
           animate={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2, ease: 'easeOut', delay: 0.5 }}
@@ -104,7 +106,7 @@ export default function HeroSection() {
 
       {/* Badge */}
       <motion.div
-        className="group mx-auto w-fit rounded-3xl border border-gray-200 bg-white px-5 py-2 text-sm text-gray-600 font-medium shadow-sm hover:shadow-md transition-all duration-300"
+        className="group mx-auto w-fit rounded-3xl border border-gray-200 bg-white px-5 py-2 text-sm text-black font-medium shadow-sm hover:shadow-md transition-all duration-300"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut', delay: 0.6 }}
