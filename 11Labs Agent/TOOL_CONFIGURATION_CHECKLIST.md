@@ -1,5 +1,20 @@
 # 11Labs Tool Configuration Checklist
 
+## ✅ SOLUTION IMPLEMENTED
+
+**The issue was in the code implementation, not the 11Labs dashboard configuration.**
+
+The previous implementation used `window.clientTools` which ElevenLabs **does not recognize**. The correct approach is to listen for the `elevenlabs-convai:call` event and register client tools on `event.detail.config.clientTools`.
+
+**What was fixed:**
+- Updated [app/components/ElevenLabsWidget.tsx](../app/components/ElevenLabsWidget.tsx) to use the `elevenlabs-convai:call` event listener
+- Added proper Script component to load the ElevenLabs widget
+- Client tools are now registered correctly when the agent starts a conversation
+
+**Status:** The implementation now matches the working UNEET project approach.
+
+---
+
 ## Troubleshooting "Client tool with name open_document is not defined on client"
 
 This error means the tool isn't properly configured or connected in the 11Labs dashboard. Follow this checklist step by step.
