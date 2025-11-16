@@ -95,28 +95,13 @@ export function UserMenu({ user }: UserMenuProps) {
             className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50"
           >
             {/* User Info Header */}
-            <div className="px-4 py-3 bg-gradient-to-br from-blue-50 to-purple-50 border-b border-gray-100">
-              <p className="text-sm font-semibold text-gray-900 truncate">{userName}</p>
-              <p className="text-xs text-gray-600 truncate">{userEmail}</p>
+            <div className="px-4 py-3 bg-black border-b border-gray-800">
+              <p className="text-sm font-semibold text-white truncate">{userName}</p>
+              <p className="text-xs text-gray-300 truncate">{userEmail}</p>
             </div>
 
             {/* Menu Items */}
             <div className="py-2">
-              {/* Profile */}
-              <button
-                className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-3"
-                onClick={() => {
-                  setIsOpen(false)
-                  // Navigate to profile page when implemented
-                }}
-              >
-                <User className="w-4 h-4" />
-                <span>Profile Settings</span>
-              </button>
-
-              {/* Divider */}
-              <div className="my-2 border-t border-gray-100" />
-
               {/* Sign Out */}
               <button
                 onClick={handleSignOut}

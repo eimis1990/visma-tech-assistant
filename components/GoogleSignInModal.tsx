@@ -36,14 +36,13 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.1, type: 'spring', bounce: 0.5 }}
-            className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4"
+            className="flex items-center justify-center mx-auto mb-6"
           >
-            <svg className="w-8 h-8 text-white" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              />
-            </svg>
+            <img
+              src="/vtech-logo.png"
+              alt="ViTech Logo"
+              className="h-16 w-auto"
+            />
           </motion.div>
 
           <motion.h2
@@ -51,8 +50,9 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-2xl font-bold text-gray-900 mb-2"
+            style={{ fontFamily: "var(--font-helvetica-now), 'Outfit', 'Helvetica Neue', sans-serif" }}
           >
-            Welcome to Visma Tech Assistant
+            Welcome to Vitech
           </motion.h2>
 
           <motion.p
@@ -60,6 +60,7 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="text-gray-600"
+            style={{ fontFamily: 'Outfit, sans-serif' }}
           >
             Sign in to access your personalized AI assistant and unlock all features
           </motion.p>
@@ -74,10 +75,11 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
           <button
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed group"
+            className="w-full flex items-center justify-center gap-3 bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group"
+            style={{ fontFamily: 'Outfit, sans-serif' }}
           >
             {isLoading ? (
-              <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-gray-600 border-t-white rounded-full animate-spin" />
             ) : (
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -119,6 +121,7 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="text-center text-xs text-gray-500 mt-6"
+          style={{ fontFamily: 'Outfit, sans-serif' }}
         >
           By continuing, you agree to our Terms of Service and Privacy Policy
         </motion.p>
