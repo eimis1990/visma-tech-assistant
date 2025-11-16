@@ -62,8 +62,11 @@ export default function HeroSection() {
     <section className="w-full h-screen overflow-hidden flex flex-col items-center justify-center relative px-4">
       <div className="flex flex-col justify-center items-center w-[250px] sm:w-[300px] md:w-[500px] lg:w-[700px] z-50 pointer-events-auto mb-12">
         <motion.h1
-          className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight font-bold tracking-tight space-y-1 md:space-y-4"
-          style={{ fontFamily: 'Outfit, sans-serif' }}
+          className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight tracking-tight space-y-1 md:space-y-4"
+          style={{
+            fontFamily:
+              "var(--font-helvetica-now), 'Outfit', 'Helvetica Neue', sans-serif",
+          }}
           animate={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2, ease: 'easeOut', delay: 0.3 }}
@@ -84,7 +87,7 @@ export default function HeroSection() {
                   'time off 🌴',
                   'benefits 🎁',
                 ]}
-                mainClassName="overflow-hidden pr-3 text-blue-600 py-0 pb-2 md:pb-4 rounded-xl"
+                mainClassName="overflow-hidden pr-3 text-[#4A5FE7] py-0 pb-2 md:pb-4 rounded-xl"
                 staggerDuration={0.03}
                 staggerFrom="last"
                 rotationInterval={3000}

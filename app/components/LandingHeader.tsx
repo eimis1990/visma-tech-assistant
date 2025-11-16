@@ -9,13 +9,13 @@ import type { User } from '@supabase/supabase-js'
 
 const ViTechLogo = ({ className }: { className?: string }) => {
   return (
-    <div className={cn('flex items-center gap-3', className)}>
+    <div className={cn('flex items-center gap-0', className)}>
       <img
         src="/vtech-logo.png"
         alt="ViTech Logo"
-        className="h-10 w-auto"
+        className="h-8 w-auto"
       />
-      <span className="text-4xl font-medium text-black" style={{ fontFamily: 'Outfit, sans-serif' }}>vitech</span>
+      <span className="text-3xl font-medium text-black" style={{ fontFamily: 'Outfit, sans-serif' }}>vitech</span>
     </div>
   )
 }

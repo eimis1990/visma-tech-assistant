@@ -1,6 +1,13 @@
 import type { Metadata } from 'next'
+import localFont from 'next/font/local'
 import Script from 'next/script'
 import './globals.css'
+
+const helveticaNow = localFont({
+  src: '../public/helvetica-now-text-medium.woff2',
+  variable: '--font-helvetica-now',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'ViTech Assistant',
@@ -23,7 +30,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
       </head>
-      <body>
+      <body className={helveticaNow.variable}>
         {children}
         <Script
           src="https://unpkg.com/@elevenlabs/convai-widget-embed"
