@@ -58,6 +58,21 @@ const searchCategories = [
 ]
 
 export default function HeroSection() {
+  const handleTryNow = () => {
+    // Open ElevenLabs widget by finding and clicking the button inside it
+    const widget = document.querySelector('elevenlabs-convai')
+    if (widget && widget.shadowRoot) {
+      // The widget uses shadow DOM, find the button inside
+      const button = widget.shadowRoot.querySelector('button')
+      if (button) {
+        button.click()
+      }
+    } else if (widget) {
+      // Fallback: try clicking the widget element itself
+      ;(widget as HTMLElement).click()
+    }
+  }
+
   return (
     <section className="w-full h-screen overflow-hidden flex flex-col items-center justify-center relative px-4">
       <div className="flex flex-col justify-center items-center w-[250px] sm:w-[300px] md:w-[500px] lg:w-[700px] z-50 pointer-events-auto mb-12">
@@ -71,23 +86,21 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2, ease: 'easeOut', delay: 0.3 }}
         >
-          <span>Find answers about </span>
+          <span>Get answers about </span>
           <LayoutGroup>
             <motion.span layout className="flex whitespace-pre">
               <TextRotate
                 texts={[
-                  'onboarding 🚀',
-                  'documents 📄',
-                  'people 👥',
-                  'kudos 💰',
-                  'vacation 🏖️',
-                  'policies 📋',
-                  'handbook 📖',
-                  'employees 👨‍💼',
-                  'time off 🌴',
-                  'benefits 🎁',
+                  'Onboarding 🚀',
+                  'Documents 📄',
+                  'Kudos 💰',
+                  'Absence 🏖️',
+                  'Handbook 📖',
+                  'Employees 👨‍💼',
+                  'Time Off 🌴',
+                  'Benefits 🎁',
                 ]}
-                mainClassName="overflow-hidden pr-3 text-[#4A5FE7] py-0 pb-2 md:pb-4 rounded-xl"
+                mainClassName="overflow-hidden pr-3 text-[#FBBB00] py-0 pb-2 md:pb-4 rounded-xl"
                 staggerDuration={0.03}
                 staggerFrom="last"
                 rotationInterval={3000}
@@ -97,7 +110,7 @@ export default function HeroSection() {
           </LayoutGroup>
         </motion.h1>
         <motion.p
-          className="text-sm sm:text-lg md:text-xl lg:text-1xl text-center pt-3 sm:pt-4 md:pt-6 lg:pt-8 text-black font-medium"
+          className="text-sm sm:text-lg md:text-xl lg:text-1xl text-center pt-2 sm:pt-3 md:pt-4 lg:pt-5 text-black font-medium"
           style={{ fontFamily: 'Outfit, sans-serif' }}
           animate={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 20 }}
@@ -107,20 +120,25 @@ export default function HeroSection() {
         </motion.p>
       </div>
 
-      {/* Badge */}
-      <motion.div
-        className="group mx-auto w-fit rounded-3xl border border-gray-200 bg-white px-5 py-2 text-sm text-black font-medium shadow-sm hover:shadow-md transition-all duration-300"
+      {/* Try Now Button */}
+      <motion.button
+        onClick={handleTryNow}
+        className="group relative mx-auto flex items-center justify-between rounded-full bg-[#1a1a1a] hover:bg-black pl-6 pr-2 py-2.5 text-white font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden min-w-[160px] mt-2 mb-12"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut', delay: 0.6 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
       >
-        Explore what you can ask
-        <ArrowRight className="ml-2 inline h-4 w-4 duration-300 group-hover:translate-x-1" />
-      </motion.div>
+        <span className="relative z-10 flex-1 text-center">Try Now!</span>
+        <div className="relative z-10 w-9 h-9 rounded-full bg-[#2a2a2a] group-hover:bg-[#3a3a3a] flex items-center justify-center transition-colors duration-300 flex-shrink-0">
+          <ArrowRight className="w-4 h-4 duration-300 group-hover:translate-x-1" />
+        </div>
+      </motion.button>
 
       {/* Search Category Cards */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl w-full mt-6 px-4"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl w-full px-4"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut', delay: 0.7 }}
