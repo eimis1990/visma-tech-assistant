@@ -1,318 +1,417 @@
 # Kudos Calculator - Agent Knowledge Base
 
-This document helps you calculate Kudos requirements and affordability for Visma employees. You will perform all calculations yourself during the conversation - no tools are needed.
+This document provides complete formulas and logic for helping Visma employees with three main kudos scenarios. You will perform all calculations yourself during the conversation - no tools are needed.
 
-## Core Constants (Memorize These)
+## Three Main Scenarios
+
+1. **How much will an item cost?** - Calculate Kudos needed for a specific price
+2. **Leaving Visma - how much do I pay?** - Calculate depreciation payment when leaving company
+3. **What can my Kudos buy?** - Calculate maximum item price from available Kudos
+
+---
+
+## SCENARIO 1: How Much Will an Item Cost?
+
+### Formula
+```
+Kudos = Price / (VAT_factor) / (Team_factor) * (Tax_multiplier)
+```
+
+### Input Questions (Ask in this order)
+1. **What is the item price in EUR?** (e.g., 245.00)
+2. **Does this price include VAT?** (Yes/No)
+3. **Is this a team purchase?** (Yes/No)
+4. **Is the item whitelisted?** (Yes/No)
+5. **Do you want to buy it with all taxes?** (Yes/No)
+
+### Calculation Steps
+
+**Step 1: Determine VAT_factor**
+```
+IF price includes VAT:
+    VAT_factor = 1.21
+ELSE:
+    VAT_factor = 1
+```
+
+**Step 2: Determine Team_factor**
+```
+IF team purchase:
+    Team_factor = 1.5
+ELSE:
+    Team_factor = 1
+```
+
+**Step 3: Determine Tax_multiplier**
+```
+IF whitelisted = Yes AND buying_with_taxes = No:
+    Tax_multiplier = 1
+ELSE:
+    Tax_multiplier = 1.21 * 1.43 = 1.7303
+```
+
+**Step 4: Calculate Kudos**
+```
+Kudos = Price / VAT_factor / Team_factor * Tax_multiplier
+Kudos_final = ROUND UP to nearest whole number
+```
+
+### Worked Example 1: Personal, Whitelisted, With Taxes
+- Price: 245.00 EUR (VAT included)
+- Team purchase: No
+- Whitelisted: Yes
+- Buying with taxes: Yes
+
+```
+Step 1: VAT_factor = 1.21 (price includes VAT)
+Step 2: Team_factor = 1 (personal purchase)
+Step 3: Tax_multiplier = 1.7303 (whitelisted but buying WITH taxes)
+Step 4: Kudos = 245 / 1.21 / 1 * 1.7303
+        = 202.48 * 1.7303
+        = 350.35
+        = 350 Kudos (rounded up)
+```
+
+**Answer:** "You need **350 Kudos** for this personal purchase with all taxes included. The item will be fully yours."
+
+### Worked Example 2: Personal, Whitelisted, Without Taxes
+- Price: 121.00 EUR (VAT included)
+- Team purchase: No
+- Whitelisted: Yes
+- Buying with taxes: No
+
+```
+Step 1: VAT_factor = 1.21
+Step 2: Team_factor = 1
+Step 3: Tax_multiplier = 1 (whitelisted AND not buying with taxes)
+Step 4: Kudos = 121 / 1.21 / 1 * 1
+        = 100 / 1
+        = 100 Kudos
+```
+
+**Answer:** "You need **100 Kudos**. Since you're buying without taxes, the item belongs to Visma Tech. Depreciation applies if you leave."
+
+### Worked Example 3: Team Purchase, Whitelisted, Without Taxes
+- Price: 181.50 EUR (VAT included)
+- Team purchase: Yes
+- Whitelisted: Yes
+- Buying with taxes: No
+
+```
+Step 1: VAT_factor = 1.21
+Step 2: Team_factor = 1.5
+Step 3: Tax_multiplier = 1 (whitelisted AND not buying with taxes)
+Step 4: Kudos = 181.50 / 1.21 / 1.5 * 1
+        = 150 / 1.5
+        = 100 Kudos
+```
+
+**Answer:** "You need **100 Kudos** for this team purchase. The item belongs to the team and must stay with the team when members leave."
+
+### Key Rules for Scenario 1
+- **Whitelisted + Without taxes = Cheapest option** (Tax_multiplier = 1)
+- **Team purchases = Better rate** (divide by 1.5, so get 50% more buying power)
+- **Buying with taxes = Higher cost** but you own the item immediately
+- **Not whitelisted OR buying with taxes = Apply 1.7303 multiplier** (21% VAT + 43% kudos tax)
+
+---
+
+## SCENARIO 2: Leaving Visma - How Much Do I Need to Pay?
+
+### Formula
+```
+IF team_purchase = Yes:
+    Payment = "-" (Cannot take team items)
+ELSE IF paid_all_taxes = Yes:
+    Payment = 0 EUR (Item is already yours)
+ELSE IF original_kudos = 0:
+    Payment = 0 EUR
+ELSE IF months_since_purchase >= 36:
+    Payment = 1 EUR (Fully depreciated)
+ELSE:
+    Payment = (Original_Kudos * (36 - months_since_purchase) / 36) * 1.21
+```
+
+### Input Questions (Ask in this order)
+1. **What was the original value in Kudos?** (e.g., 54)
+2. **Was this a team purchase?** (Yes/No)
+3. **Did you pay all taxes when buying (or was the item not whitelisted)?** (Yes/No)
+4. **When was the item purchased?** (yyyy-MM format, e.g., 2025-11-05)
+
+### Calculation Steps
+
+**Step 1: Check if team purchase**
+```
+IF team_purchase = Yes:
+    RETURN "-" (Item must stay with the team)
+    STOP
+```
+
+**Step 2: Check if taxes were paid**
+```
+IF paid_all_taxes = Yes:
+    RETURN 0 EUR (Item already belongs to you)
+    STOP
+```
+
+**Step 3: Calculate months since purchase**
+```
+months_elapsed = (Current_date - Purchase_date) in months
+```
+
+**Step 4: Calculate depreciation payment**
+```
+IF months_elapsed >= 36:
+    Payment = 1 EUR (Fully depreciated, symbolic payment)
+ELSE:
+    Remaining_kudos = Original_Kudos * (36 - months_elapsed) / 36
+    Payment = Remaining_kudos * 1.21 EUR
+    Round to 2 decimal places
+```
+
+### Worked Example 1: Team Purchase
+- Original value: 54 Kudos
+- Team purchase: Yes
+- Paid taxes: Yes
+- Purchase date: 2025-11-05
+
+```
+Step 1: team_purchase = Yes
+RESULT: "-" Cannot take this item
+```
+
+**Answer:** "This was a team purchase - the item must stay with the team. You cannot take it when leaving."
+
+### Worked Example 2: Personal, Taxes Paid
+- Original value: 54 Kudos
+- Team purchase: No
+- Paid taxes: Yes
+- Purchase date: 2025-11-05
+
+```
+Step 1: team_purchase = No (continue)
+Step 2: paid_all_taxes = Yes
+RESULT: 0 EUR
+```
+
+**Answer:** "You paid all taxes when purchasing, so the item is fully yours. **You don't need to pay anything** when leaving."
+
+### Worked Example 3: Personal, No Taxes, Recent Purchase
+- Original value: 54 Kudos
+- Team purchase: No
+- Paid taxes: No
+- Purchase date: 2025-11-05 (just purchased)
+- Current date: 2025-11-16 (0 months elapsed)
+
+```
+Step 1: team_purchase = No (continue)
+Step 2: paid_all_taxes = No (continue)
+Step 3: months_elapsed = 0
+Step 4: Remaining_kudos = 54 * (36 - 0) / 36 = 54 * 1 = 54
+        Payment = 54 * 1.21 = 65.34 EUR
+```
+
+**Answer:** "You need to pay **65.34 EUR** to keep this item. Tech equipment depreciates over 3 years."
+
+### Worked Example 4: Personal, No Taxes, After 3 Years
+- Original value: 100 Kudos
+- Team purchase: No
+- Paid taxes: No
+- Purchase date: 2022-11-05
+- Current date: 2025-11-16 (36+ months elapsed)
+
+```
+Step 1: team_purchase = No (continue)
+Step 2: paid_all_taxes = No (continue)
+Step 3: months_elapsed = 36+
+Step 4: months_elapsed >= 36
+RESULT: 1 EUR
+```
+
+**Answer:** "The item is fully depreciated after 3 years. You only need to pay **1 EUR** to keep it."
+
+### Key Rules for Scenario 2
+- **Team items cannot be taken** - they stay with the team
+- **If you paid all taxes = 0 EUR** - item is already yours
+- **Tech equipment depreciates over 36 months** (3 years)
+- **Non-tech equipment may have different depreciation** - consult Kudos Committee
+- **Depreciation is linear**: remaining_value = original * (36 - months) / 36
+- **Payment is in EUR with VAT**: remaining_kudos * 1.21
+- **After 36 months = 1 EUR** symbolic payment
+
+**IMPORTANT NOTE:** The 36-month depreciation period applies to **tech equipment only** (laptops, monitors, keyboards, etc.). For non-tech items (furniture, appliances, etc.), depreciation may vary. If a user asks about a non-tech item, inform them to consult the Kudos Committee for the specific depreciation period.
+
+---
+
+## SCENARIO 3: What Can My Kudos Buy?
+
+This is the reverse of Scenario 1. Given Kudos, calculate maximum affordable price.
+
+### Formula
+```
+Max_Price_excl_VAT = Kudos * Multiplier
+Max_Price_incl_VAT = Max_Price_excl_VAT * 1.21
+```
+
+### Input Questions (Ask in this order)
+1. **How many Kudos do you have?** (e.g., 100)
+2. **Is this for personal use or team purchase?** (Personal/Team)
+3. **Do you want to buy with all taxes included?** (Yes/No)
+
+### Multiplier Table
+
+| Purchase Type | With Taxes | Multiplier | What 100 Kudos Buys (excl. VAT) |
+|---------------|------------|------------|----------------------------------|
+| Personal | No | 1.000 | 100.00 EUR |
+| Personal | Yes | 0.578 | 57.79 EUR |
+| Team | No | 1.500 | 150.00 EUR |
+| Team | Yes | 0.867 | 86.69 EUR |
+
+**How multipliers are derived:**
+- **Personal, No taxes**: 1.000 (base rate: 1 Kudos = 1 EUR excl. VAT)
+- **Team, No taxes**: 1.500 (team bonus: 1 Kudos = 1.5 EUR excl. VAT)
+- **Personal, With taxes**: 1 / 1.7303 = 0.578 (pay penalty for ownership)
+- **Team, With taxes**: 1.5 / 1.7303 = 0.867 (team bonus but still pay penalty)
+
+### Worked Example 1: Personal, Without Taxes
+- Kudos: 100
+- Personal or Team: Personal
+- With taxes: No
+
+```
+Multiplier = 1.000
+Max_Price_excl_VAT = 100 * 1.000 = 100.00 EUR
+Max_Price_incl_VAT = 100 * 1.21 = 121.00 EUR
+```
+
+**Answer:** "With 100 Kudos, you can buy an item for up to:
+- **121 EUR** (with VAT) or
+- **100 EUR** (without VAT)
+
+Note: Item belongs to Visma Tech since you're not buying with taxes."
+
+### Worked Example 2: Team Purchase, Without Taxes
+- Kudos: 100
+- Personal or Team: Team
+- With taxes: No
+
+```
+Multiplier = 1.500
+Max_Price_excl_VAT = 100 * 1.500 = 150.00 EUR
+Max_Price_incl_VAT = 150 * 1.21 = 181.50 EUR
+```
+
+**Answer:** "With 100 Kudos for a team purchase, you can buy an item for up to:
+- **181.50 EUR** (with VAT) or
+- **150 EUR** (without VAT)
+
+Item belongs to the team and stays with the team when members leave."
+
+### Worked Example 3: Personal, With Taxes
+- Kudos: 100
+- Personal or Team: Personal
+- With taxes: Yes
+
+```
+Multiplier = 0.578
+Max_Price_excl_VAT = 100 * 0.578 = 57.79 EUR (rounded)
+Max_Price_incl_VAT = 57.79 * 1.21 = 69.93 EUR
+```
+
+**Answer:** "With 100 Kudos, buying with all taxes included, you can afford:
+- **69.93 EUR** (with VAT) or
+- **57.79 EUR** (without VAT)
+
+The item will be fully yours - no payment needed when leaving."
+
+### Worked Example 4: Team Purchase, With Taxes
+- Kudos: 100
+- Personal or Team: Team
+- With taxes: Yes
+
+```
+Multiplier = 0.867
+Max_Price_excl_VAT = 100 * 0.867 = 86.69 EUR (rounded)
+Max_Price_incl_VAT = 86.69 * 1.21 = 104.90 EUR
+```
+
+**Answer:** "With 100 Kudos for a team purchase with taxes, you can afford:
+- **104.90 EUR** (with VAT) or
+- **86.69 EUR** (without VAT)
+
+Item belongs to the team."
+
+### Key Rules for Scenario 3
+- **Team purchases give better rates** (1.5x multiplier without taxes)
+- **Buying without taxes = More purchasing power** but item belongs to Visma
+- **Buying with taxes = Less purchasing power** but you own it immediately
+- **Always show both prices**: with VAT and without VAT
+
+---
+
+## Constants Reference
 
 ```
 VAT_RATE = 0.21 (21%)
-
-Multipliers (how much EUR excl. VAT you get per 1 Kudos):
-- Personal, no taxes:  1.000 EUR per Kudos
-- Team, no taxes:      1.500 EUR per Kudos
-- Personal, with taxes: 0.578 EUR per Kudos
-- Team, with taxes:     0.867 EUR per Kudos
-```
-
-## What is Kudos?
-
-Kudos are internal points used as a budget. The value of 1 Kudos in EUR depends on:
-- Whether it's a personal or team purchase
-- Whether you buy with all taxes included or not
-- Whether the price includes VAT
-
-## Purchase Types
-
-There are 4 main scenarios based on two factors:
-
-**Factor 1: Personal vs Team**
-- **Personal**: Item is for individual employee
-- **Team**: Item belongs to the team
-
-**Factor 2: With taxes vs Without taxes**
-- **With taxes**: Employee owns item immediately, no extra payment when leaving company
-- **Without taxes**: Item belongs to Visma, depreciation applies if employee leaves
-
-## Conversation Flow - Questions to Ask
-
-When helping a user, follow this flow:
-
-### If they want to know: "How many Kudos do I need?"
-
-Ask these questions in order:
-1. "What is the item price in EUR?"
-2. "Does this price already include VAT (21%)?"
-3. "Is this a personal purchase or for the team?"
-4. "Will you buy it with all taxes included?"
-
-Then calculate (see Section A below).
-
-### If they want to know: "What can I afford?"
-
-Ask these questions in order:
-1. "How many Kudos do you currently have?"
-2. "Is this for personal use or a team purchase?"
-3. "Do you want to buy with all taxes included?"
-
-Then calculate (see Section B below).
-
----
-
-## SECTION A: Calculate "How many Kudos do I need?"
-
-### Step-by-Step Process
-
-**Step 1: Normalize the price to exclude VAT**
-
-If user says price INCLUDES VAT:
-```
-Price_excl_VAT = User_Price / 1.21
-```
-
-If user says price EXCLUDES VAT:
-```
-Price_excl_VAT = User_Price
-```
-
-**Step 2: Choose the correct multiplier**
-
-Based on their answers:
-- Personal + No taxes → Multiplier = 1.000
-- Team + No taxes → Multiplier = 1.500
-- Personal + With taxes → Multiplier = 0.578
-- Team + With taxes → Multiplier = 0.867
-
-**Step 3: Calculate required Kudos**
-
-```
-Kudos_needed = Price_excl_VAT / Multiplier
-Round UP to nearest whole number (ceiling function)
-```
-
-**Step 4: Present the answer**
-
-Tell them:
-- How many Kudos are needed
-- Remind them if it's personal/team
-- Mention the tax implications
-
-### WORKED EXAMPLE 1: Personal, No Taxes, Price Includes VAT
-
-**User wants to buy:** Item for 121 EUR (VAT included)
-**Personal or Team?** Personal
-**With taxes?** No
-
-**Your calculation:**
-```
-Step 1: Price_excl_VAT = 121 / 1.21 = 100 EUR
-Step 2: Multiplier = 1.000 (personal, no taxes)
-Step 3: Kudos_needed = 100 / 1.000 = 100 Kudos
-```
-
-**Your response:**
-"You'll need **100 Kudos** for this personal purchase without taxes. Note that since you're buying without taxes, the item technically belongs to Visma, and depreciation rules apply if you leave the company."
-
-### WORKED EXAMPLE 2: Team, With Taxes, Price Excludes VAT
-
-**User wants to buy:** Item for 200 EUR (VAT excluded)
-**Personal or Team?** Team
-**With taxes?** Yes
-
-**Your calculation:**
-```
-Step 1: Price_excl_VAT = 200 EUR (already excluded)
-Step 2: Multiplier = 0.867 (team, with taxes)
-Step 3: Kudos_needed = 200 / 0.867 = 230.68... → Round UP to 231 Kudos
-```
-
-**Your response:**
-"You'll need **231 Kudos** for this team purchase with all taxes included. Since it's a team purchase, the item belongs to the team. When any team member leaves, the item stays with the team."
-
-### WORKED EXAMPLE 3: Personal, With Taxes, Price Includes VAT
-
-**User wants to buy:** Item for 300 EUR (VAT included)
-**Personal or Team?** Personal
-**With taxes?** Yes
-
-**Your calculation:**
-```
-Step 1: Price_excl_VAT = 300 / 1.21 = 247.93 EUR
-Step 2: Multiplier = 0.578 (personal, with taxes)
-Step 3: Kudos_needed = 247.93 / 0.578 = 428.95... → Round UP to 429 Kudos
-```
-
-**Your response:**
-"You'll need **429 Kudos** for this personal purchase with all taxes included. The good news is that since you're buying with taxes, the item is immediately yours - no additional payment needed if you leave the company."
-
----
-
-## SECTION B: Calculate "What can I afford?"
-
-### Step-by-Step Process
-
-**Step 1: Choose the correct multiplier**
-
-Based on their answers (same as Section A, Step 2):
-- Personal + No taxes → Multiplier = 1.000
-- Team + No taxes → Multiplier = 1.500
-- Personal + With taxes → Multiplier = 0.578
-- Team + With taxes → Multiplier = 0.867
-
-**Step 2: Calculate maximum price (excluding VAT)**
-
-```
-Max_price_excl_VAT = Kudos_balance × Multiplier
-```
-
-**Step 3: Optionally convert to include VAT**
-
-```
-Max_price_incl_VAT = Max_price_excl_VAT × 1.21
-```
-
-**Step 4: Present both amounts**
-
-Show them both the excl. VAT and incl. VAT amounts so they understand what they can afford.
-
-### WORKED EXAMPLE 4: Personal, No Taxes
-
-**User has:** 500 Kudos
-**Personal or Team?** Personal
-**With taxes?** No
-
-**Your calculation:**
-```
-Step 1: Multiplier = 1.000 (personal, no taxes)
-Step 2: Max_price_excl_VAT = 500 × 1.000 = 500 EUR
-Step 3: Max_price_incl_VAT = 500 × 1.21 = 605 EUR
-```
-
-**Your response:**
-"With 500 Kudos for a personal purchase without taxes, you can afford an item up to:
-- **500 EUR** (excluding VAT)
-- **605 EUR** (including VAT)
-
-Remember, since you're buying without taxes, the item belongs to Visma and depreciation rules apply if you leave the company."
-
-### WORKED EXAMPLE 5: Team, With Taxes
-
-**User has:** 300 Kudos
-**Personal or Team?** Team
-**With taxes?** Yes
-
-**Your calculation:**
-```
-Step 1: Multiplier = 0.867 (team, with taxes)
-Step 2: Max_price_excl_VAT = 300 × 0.867 = 260.10 EUR
-Step 3: Max_price_incl_VAT = 260.10 × 1.21 = 314.72 EUR
-```
-
-**Your response:**
-"With 300 Kudos for a team purchase with all taxes included, you can afford an item up to:
-- **260.10 EUR** (excluding VAT)
-- **314.72 EUR** (including VAT)
-
-Since this is a team purchase, the item will belong to the team and stays with the team even when members leave."
-
-### WORKED EXAMPLE 6: Personal, With Taxes
-
-**User has:** 1000 Kudos
-**Personal or Team?** Personal
-**With taxes?** Yes
-
-**Your calculation:**
-```
-Step 1: Multiplier = 0.578 (personal, with taxes)
-Step 2: Max_price_excl_VAT = 1000 × 0.578 = 578 EUR
-Step 3: Max_price_incl_VAT = 578 × 1.21 = 699.38 EUR
-```
-
-**Your response:**
-"With 1000 Kudos for a personal purchase with all taxes included, you can afford an item up to:
-- **578 EUR** (excluding VAT)
-- **699.38 EUR** (including VAT)
-
-The advantage of buying with taxes is that the item is immediately yours - no additional payment needed if you leave the company."
-
----
-
-## Important Rules to Remember
-
-### Team Purchase Rules
-- Item belongs to the team, not the individual
-- When an employee leaves, team items MUST stay with the team
-- Cannot buy out team items when leaving
-
-### Buying With Taxes (Personal)
-- Item is fully owned by employee immediately
-- No additional payment needed when leaving the company
-- Higher Kudos cost but full ownership
-
-### Buying Without Taxes (Personal)
-- Item legally belongs to Visma
-- Tech equipment depreciates over 3 years
-- If leaving the company:
-  - Newer items: May need to pay to keep it
-  - Fully depreciated items: No payment needed
-
-## Quick Reference Table
-
-| Purchase Type | Multiplier | Example: 100 Kudos buys |
-|--------------|------------|-------------------------|
-| Personal, No Tax | 1.000 | 100 EUR (excl VAT) |
-| Team, No Tax | 1.500 | 150 EUR (excl VAT) |
-| Personal, With Tax | 0.578 | 57.80 EUR (excl VAT) |
-| Team, With Tax | 0.867 | 86.70 EUR (excl VAT) |
-
-## Tips for Calculations
-
-1. **Always round UP** for "Kudos needed" calculations - users can't spend fractional Kudos
-2. **Show your work** - explain the calculation steps so users understand
-3. **Present both VAT-excluded and VAT-included** amounts for clarity
-4. **Remind them of ownership rules** based on their choices
-5. **Be precise with decimals** when showing EUR amounts (2 decimal places)
-
-## If User Is Confused
-
-If a user doesn't understand the different options, explain:
-
-**"The main trade-off is:**
-- **With taxes** = Higher Kudos cost, but item is immediately yours
-- **Without taxes** = Lower Kudos cost, but Visma owns it (depreciation applies)
-
-**For team purchases:**
-- Items always stay with the team, regardless of tax choice
-- Team purchases get better rates (more EUR per Kudos)"
-
----
-
-## Practice Calculation Template
-
-When doing a calculation, think through it like this:
-
-```
-Given information:
-- [Price or Kudos balance]
-- [Personal or Team]
-- [With or without taxes]
-- [Price includes VAT: yes/no]
-
-Step 1: Normalize price to excl. VAT (if needed)
-[Show calculation]
-
-Step 2: Choose multiplier
-[State which multiplier: 1.000, 1.500, 0.578, or 0.867]
-
-Step 3: Calculate
-[Show formula and result]
-
-Step 4: Round (if "Kudos needed")
-[Round UP to whole Kudos]
-
-Answer: [Clear statement of result]
-Additional info: [Ownership rules reminder]
+TAX_PENALTY = 1.21 * 1.43 = 1.7303 (VAT + 43% kudos tax)
+TEAM_MULTIPLIER = 1.5 (team purchases get 50% more buying power)
+DEPRECIATION_PERIOD = 36 months (3 years for tech equipment)
 ```
 
 ---
 
-Remember: You have all the information and formulas you need right here. Do the math yourself step-by-step during the conversation. Show your work to build trust with the user!
+## Important Ownership Rules
+
+### Whitelisted Items (Tax-Free Option Available)
+- **Without taxes**: Item belongs to Visma Tech, depreciation applies
+- **With taxes**: Item belongs to you immediately, costs more Kudos
+
+Examples: Laptops, monitors, keyboards, work chairs, tech equipment
+
+### Greylist Items (Must Pay Taxes)
+- Always require VAT + 43% kudos tax
+- Item belongs to you immediately
+- No depreciation concerns
+
+Examples: Smartwatches, household appliances, cameras
+
+### Team Purchases
+- **Always stay with the team** when any member leaves
+- Cannot be bought out or taken by individuals
+- Better Kudos rates (1.5x multiplier)
+
+---
+
+## Quick Decision Tree
+
+**User asks about buying an item:**
+1. Is it whitelisted? → Affects tax multiplier
+2. Personal or team? → Affects team factor (1 or 1.5)
+3. With or without taxes? → Affects tax multiplier (1 or 1.7303)
+4. Calculate using Scenario 1 formula
+
+**User asks about leaving Visma:**
+1. Was it a team purchase? → Cannot take it
+2. Did they pay all taxes? → 0 EUR payment
+3. How long ago purchased? → Calculate depreciation using Scenario 2
+
+**User asks what they can afford:**
+1. Personal or team? → Choose multiplier
+2. With or without taxes? → Choose multiplier
+3. Calculate using Scenario 3 formula
+
+---
+
+## Tips for Agent
+
+1. **Always ask about "whitelisted"** in Scenario 1 - it's critical for the calculation
+2. **Round UP Kudos** when calculating cost (CEILING function)
+3. **Round to 2 decimals for EUR** when showing prices
+4. **Show both VAT-included and excluded** prices for clarity
+5. **Remind users about ownership** based on their choices
+6. **Be precise with months** in depreciation calculations
+7. **Team items are non-negotiable** - they cannot be taken
+
+---
+
+Remember: You have all formulas here. Calculate everything yourself step-by-step. Show your work to build trust with users!

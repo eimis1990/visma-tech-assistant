@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { LayoutGroup, motion } from 'framer-motion'
 import { TextRotate } from '@/components/ui/text-rotate'
 import {
@@ -11,6 +12,7 @@ import {
   PlaneTakeoff,
   ArrowRight,
 } from 'lucide-react'
+import KudosCalculatorPanel from '@/components/KudosCalculatorPanel'
 
 const searchCategories = [
   {
@@ -38,8 +40,8 @@ const searchCategories = [
     icon: Calculator,
     title: 'Kudos Calculator',
     description: 'Calculate your kudos expenses and budget',
-    iconBgColor: 'bg-green-600/10',
-    iconColor: 'text-green-600',
+    iconBgColor: 'bg-[#FBBB00]/10',
+    iconColor: 'text-[#FBBB00]',
   },
   {
     icon: PlaneTakeoff,
@@ -58,6 +60,8 @@ const searchCategories = [
 ]
 
 export default function HeroSection() {
+  const [isKudosPanelOpen, setIsKudosPanelOpen] = useState(false)
+
   const handleTryNow = () => {
     // Open ElevenLabs widget by finding and clicking the button inside it
     const widget = document.querySelector('elevenlabs-convai')
@@ -145,9 +149,12 @@ export default function HeroSection() {
       >
         {searchCategories.map((category, index) => {
           const Icon = category.icon
+          const isKudosCard = category.title === 'Kudos Calculator'
+
           return (
             <motion.div
               key={category.title}
+              onClick={() => isKudosCard && setIsKudosPanelOpen(true)}
               className="relative p-5 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 cursor-pointer group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -166,6 +173,12 @@ export default function HeroSection() {
           )
         })}
       </motion.div>
+
+      {/* Kudos Calculator Panel */}
+      <KudosCalculatorPanel
+        isOpen={isKudosPanelOpen}
+        onClose={() => setIsKudosPanelOpen(false)}
+      />
     </section>
   )
 }

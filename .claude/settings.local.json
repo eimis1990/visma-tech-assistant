@@ -5,7 +5,9 @@
       "Bash(xargs ls:*)",
       "Bash(cat:*)",
       "Bash(npm run build:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []
