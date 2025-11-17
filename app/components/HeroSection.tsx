@@ -11,37 +11,37 @@ const searchCategories = [
     iconSrc: '/card icons/onboarding-icon.png',
     title: 'Onboarding',
     description: 'Get started with company processes and guidelines',
-    color: '#E85B35',
+    color: '#FBBB00',
   },
   {
     iconSrc: '/card icons/documents-icon.png',
     title: 'Documents',
     description: 'Find vacation forms, policies, and important files',
-    color: '#5BACF8',
+    color: '#FBBB00',
   },
   {
     iconSrc: '/card icons/people-icon.png',
     title: 'Employees',
     description: 'Discover employees by technology or project',
-    color: '#8B6BF6',
+    color: '#FBBB00',
   },
   {
     iconSrc: '/card icons/kudos-calculator-icon.png',
     title: 'Kudos Calculator',
     description: 'Calculate your kudos expenses and budget',
-    color: '#70DF8D',
+    color: '#FBBB00',
   },
   {
     iconSrc: '/card icons/absence-icon.png',
     title: 'Absence Requests',
     description: 'Request vacation or other type of absence',
-    color: '#F6C449',
+    color: '#FBBB00',
   },
   {
     iconSrc: '/card icons/employee-handbook-icon.png',
     title: 'Employee Handbook',
     description: 'Access workplace policies, benefits, and guidelines',
-    color: '#5BC2AE',
+    color: '#FBBB00',
   },
 ]
 
@@ -99,8 +99,8 @@ export default function HeroSection() {
                     'Onboarding',
                     'Documents',
                     'Employees',
-                    'Calculator',
-                    'Absences',
+                    'Kudos',
+                    'Absence',
                     'Handbook',
                   ]}
                   mainClassName="overflow-hidden py-0 pb-2 md:pb-4 rounded-xl"
