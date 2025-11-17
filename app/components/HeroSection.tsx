@@ -1,66 +1,61 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { LayoutGroup, motion } from 'framer-motion'
 import { TextRotate } from '@/components/ui/text-rotate'
-import {
-  FileText,
-  Users,
-  Building2,
-  Calendar,
-  Calculator,
-  PlaneTakeoff,
-  ArrowRight,
-} from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import KudosCalculatorPanel from '@/components/KudosCalculatorPanel'
 
 const searchCategories = [
   {
-    icon: Building2,
+    iconSrc: '/card icons/onboarding-icon.png',
     title: 'Onboarding',
     description: 'Get started with company processes and guidelines',
-    iconBgColor: 'bg-blue-600/10',
-    iconColor: 'text-blue-600',
+    color: '#E85B35',
   },
   {
-    icon: FileText,
+    iconSrc: '/card icons/documents-icon.png',
     title: 'Documents',
     description: 'Find vacation forms, policies, and important files',
-    iconBgColor: 'bg-orange-600/10',
-    iconColor: 'text-orange-600',
+    color: '#5BACF8',
   },
   {
-    icon: Users,
-    title: 'People',
+    iconSrc: '/card icons/people-icon.png',
+    title: 'Employees',
     description: 'Discover employees by technology or project',
-    iconBgColor: 'bg-purple-600/10',
-    iconColor: 'text-purple-600',
+    color: '#8B6BF6',
   },
   {
-    icon: Calculator,
+    iconSrc: '/card icons/kudos-calculator-icon.png',
     title: 'Kudos Calculator',
     description: 'Calculate your kudos expenses and budget',
-    iconBgColor: 'bg-[#FBBB00]/10',
-    iconColor: 'text-[#FBBB00]',
+    color: '#70DF8D',
   },
   {
-    icon: PlaneTakeoff,
+    iconSrc: '/card icons/absence-icon.png',
     title: 'Absence Requests',
     description: 'Request vacation or other type of absence',
-    iconBgColor: 'bg-pink-600/10',
-    iconColor: 'text-pink-600',
+    color: '#F6C449',
   },
   {
-    icon: Calendar,
+    iconSrc: '/card icons/employee-handbook-icon.png',
     title: 'Employee Handbook',
     description: 'Access workplace policies, benefits, and guidelines',
-    iconBgColor: 'bg-indigo-600/10',
-    iconColor: 'text-indigo-600',
+    color: '#5BC2AE',
   },
 ]
 
 export default function HeroSection() {
   const [isKudosPanelOpen, setIsKudosPanelOpen] = useState(false)
+  const [currentIconIndex, setCurrentIconIndex] = useState(0)
+
+  // Rotate icon every 3 seconds to match text rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIconIndex((prev) => (prev + 1) % searchCategories.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   const handleTryNow = () => {
     // Open ElevenLabs widget by finding and clicking the button inside it
@@ -90,25 +85,40 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2, ease: 'easeOut', delay: 0.3 }}
         >
-          <span>Get answers about </span>
+          <span>Ask anything about </span>
           <LayoutGroup>
-            <motion.span layout className="flex whitespace-pre">
-              <TextRotate
-                texts={[
-                  'Onboarding 🚀',
-                  'Documents 📄',
-                  'Kudos 💰',
-                  'Absence 🏖️',
-                  'Handbook 📖',
-                  'Employees 👨‍💼',
-                  'Time Off 🌴',
-                  'Benefits 🎁',
-                ]}
-                mainClassName="overflow-hidden pr-3 text-[#FBBB00] py-0 pb-2 md:pb-4 rounded-xl"
-                staggerDuration={0.03}
-                staggerFrom="last"
-                rotationInterval={3000}
-                transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+            <motion.span layout className="flex whitespace-pre items-center gap-3 md:gap-4">
+              <motion.div
+                animate={{
+                  color: searchCategories[currentIconIndex].color
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                <TextRotate
+                  texts={[
+                    'Onboarding',
+                    'Documents',
+                    'Employees',
+                    'Calculator',
+                    'Absences',
+                    'Handbook',
+                  ]}
+                  mainClassName="overflow-hidden py-0 pb-2 md:pb-4 rounded-xl"
+                  staggerDuration={0.03}
+                  staggerFrom="last"
+                  rotationInterval={3000}
+                  transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+                />
+              </motion.div>
+              <motion.img
+                key={searchCategories[currentIconIndex].iconSrc}
+                src={searchCategories[currentIconIndex].iconSrc}
+                alt="category icon"
+                className="w-14 h-14 md:w-20 md:h-20 object-contain"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
               />
             </motion.span>
           </LayoutGroup>
@@ -148,7 +158,6 @@ export default function HeroSection() {
         transition={{ duration: 0.6, ease: 'easeOut', delay: 0.7 }}
       >
         {searchCategories.map((category, index) => {
-          const Icon = category.icon
           const isKudosCard = category.title === 'Kudos Calculator'
 
           return (
@@ -160,10 +169,15 @@ export default function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
             >
-              <div
-                className={`w-10 h-10 rounded-lg ${category.iconBgColor} flex items-center justify-center mb-3 ${category.iconColor} group-hover:scale-110 transition-transform`}
-              >
-                <Icon className="w-5 h-5" />
+              <div className="flex items-start justify-between">
+                <img
+                  src={category.iconSrc}
+                  alt={`${category.title} icon`}
+                  className="w-12 h-12 object-contain mb-3 group-hover:scale-110 transition-transform"
+                />
+                {isKudosCard && (
+                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                )}
               </div>
               <h3 className="text-base font-semibold text-gray-900 mb-1.5">
                 {category.title}
