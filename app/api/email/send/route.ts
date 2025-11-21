@@ -3,10 +3,14 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   try {
-    const { accessToken, body, subject } = await request.json()
+    const { accessToken, body, subject, to } = await request.json()
 
     if (!accessToken) {
       return NextResponse.json({ error: 'Access token required' }, { status: 401 })
+    }
+
+    if (!to) {
+      return NextResponse.json({ error: 'Recipient email required' }, { status: 400 })
     }
 
     const auth = new google.auth.OAuth2()
@@ -17,7 +21,7 @@ export async function POST(request: Request) {
     const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString('base64')}?=`
     const messageParts = [
       'From: me',
-      'To: e.kudarauskas@gmail.com',
+      `To: ${to}`,
       `Subject: ${utf8Subject}`,
       'Content-Type: text/plain; charset=utf-8',
       'MIME-Version: 1.0',

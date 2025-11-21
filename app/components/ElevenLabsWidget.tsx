@@ -52,6 +52,65 @@ export default function ElevenLabsWidget({ agentId }: ElevenLabsWidgetProps) {
             const response = `Document "${params.document_title}" opened successfully.`;
             console.log("📤 Returning to agent:", response);
             return response;
+          },
+
+          open_absence_panel: async () => {
+            console.log("🏖️ open_absence_panel tool called by agent!");
+
+            // Get current date information
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            });
+            
+            // Calculate next Monday
+            const nextMonday = new Date(now);
+            const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
+            nextMonday.setDate(now.getDate() + daysUntilMonday);
+            
+            const nextMondayStr = nextMonday.toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            });
+
+            // Dispatch event to our hook to open the absence panel
+            window.dispatchEvent(
+              new CustomEvent("elevenlabs:client_tool_call", {
+                detail: {
+                  tool_name: "open_absence_panel",
+                  parameters: {},
+                  call_id: `call_${Date.now()}`
+                }
+              })
+            );
+
+            // Return current date context to the agent
+            const response = `Panel opened. Today is ${dateStr}. Next Monday is ${nextMondayStr}.`;
+            console.log("📤 Returning to agent:", response);
+            return response;
+          },
+
+          fill_absence_request: async (params: { absence_type: string; start_date: string; end_date: string }) => {
+            console.log("📝 fill_absence_request tool called by agent!", params);
+
+            // Dispatch event to our hook to fill the absence form
+            window.dispatchEvent(
+              new CustomEvent("elevenlabs:client_tool_call", {
+                detail: {
+                  tool_name: "fill_absence_request",
+                  parameters: params,
+                  call_id: `call_${Date.now()}`
+                }
+              })
+            );
+
+            const response = `Absence request filled: ${params.absence_type} from ${params.start_date} to ${params.end_date}. Please review and press Send.`;
+            console.log("📤 Returning to agent:", response);
+            return response;
           }
         };
 
@@ -95,10 +154,11 @@ export default function ElevenLabsWidget({ agentId }: ElevenLabsWidgetProps) {
         }}
       />
 
-      {/* ElevenLabs ConvAI Widget */}
+      {/* ElevenLabs ConvAI Widget - Ensure it's above all modals */}
       <elevenlabs-convai
         ref={widgetRef as any}
         agent-id={agentId}
+        style={{ zIndex: 999999 } as any}
       />
     </>
   );

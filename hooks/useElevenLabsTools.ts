@@ -7,9 +7,15 @@ interface DocumentToolParams {
     document_url: string;
 }
 
+interface AbsenceToolParams {
+    absence_type: string;
+    start_date: string;
+    end_date: string;
+}
+
 interface ClientToolCallEvent {
     tool_name: string;
-    parameters: DocumentToolParams;
+    parameters: DocumentToolParams & AbsenceToolParams;
     call_id: string;
 }
 
@@ -18,9 +24,17 @@ interface DocumentData {
     url: string;
 }
 
+interface AbsenceData {
+    type: string;
+    startDate: string;
+    endDate: string;
+}
+
 export function useElevenLabsTools() {
     const [documentData, setDocumentData] = useState<DocumentData | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [absenceData, setAbsenceData] = useState<AbsenceData | null>(null);
+    const [isAbsencePanelOpen, setIsAbsencePanelOpen] = useState(false);
 
     useEffect(() => {
         const handleToolCall = (event: Event) => {
@@ -38,6 +52,17 @@ export function useElevenLabsTools() {
                 setIsDrawerOpen(true);
 
                 console.log("✅ Document drawer opened with:", parameters.document_title);
+            } else if (tool_name === "open_absence_panel") {
+                setIsAbsencePanelOpen(true);
+                console.log("✅ Absence panel opened");
+            } else if (tool_name === "fill_absence_request") {
+                setAbsenceData({
+                    type: parameters.absence_type,
+                    startDate: parameters.start_date,
+                    endDate: parameters.end_date
+                });
+                setIsAbsencePanelOpen(true);
+                console.log("✅ Absence form filled with:", parameters);
             }
         };
 
@@ -59,9 +84,19 @@ export function useElevenLabsTools() {
         setTimeout(() => setDocumentData(null), 300);
     };
 
+    const closeAbsencePanel = () => {
+        setIsAbsencePanelOpen(false);
+        // Clear absence data after animation
+        setTimeout(() => setAbsenceData(null), 300);
+    };
+
     return {
         documentData,
         isDrawerOpen,
         closeDrawer,
+        absenceData,
+        isAbsencePanelOpen,
+        closeAbsencePanel,
+        setIsAbsencePanelOpen, // Export setter for manual control
     };
 }

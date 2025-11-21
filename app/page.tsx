@@ -4,10 +4,19 @@ import LandingHeader from './components/LandingHeader'
 import HeroSection from './components/HeroSection'
 import ElevenLabsWidget from './components/ElevenLabsWidget'
 import DocumentDrawer from '@/components/DocumentDrawer'
+import AbsenceRequestPanel from '@/components/AbsenceRequestPanel'
 import { useElevenLabsTools } from '@/hooks/useElevenLabsTools'
 
 export default function Home() {
-  const { documentData, isDrawerOpen, closeDrawer } = useElevenLabsTools()
+  const { 
+    documentData, 
+    isDrawerOpen, 
+    closeDrawer,
+    absenceData,
+    isAbsencePanelOpen,
+    closeAbsencePanel,
+    setIsAbsencePanelOpen
+  } = useElevenLabsTools()
 
   return (
     <div className="min-h-screen w-full relative bg-gradient-to-b from-white to-[#EFF2F5]">
@@ -65,7 +74,7 @@ export default function Home() {
         <LandingHeader />
 
         <main className="flex-1 flex flex-col">
-          <HeroSection />
+          <HeroSection onOpenAbsencePanel={() => setIsAbsencePanelOpen(true)} />
         </main>
 
         {/* ElevenLabs Widget - will appear in bottom right corner */}
@@ -81,6 +90,13 @@ export default function Home() {
           documentUrl={documentData.url}
         />
       )}
+
+      {/* Absence Request Panel - appears when agent triggers or user clicks */}
+      <AbsenceRequestPanel
+        isOpen={isAbsencePanelOpen}
+        onClose={closeAbsencePanel}
+        prefilledRequest={absenceData}
+      />
     </div>
   )
 }

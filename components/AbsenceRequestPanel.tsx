@@ -7,10 +7,12 @@ import { cn } from '@/lib/utils'
 import { ActionSearchBar } from '@/components/ui/action-search-bar'
 import { supabase } from '@/lib/supabase'
 import { Toast } from '@/components/ui/toast'
+import EmailRecipientDialog from '@/components/EmailRecipientDialog'
 
 interface AbsenceRequestPanelProps {
   isOpen: boolean
   onClose: () => void
+  prefilledRequest?: { type: string, startDate: string, endDate: string } | null
 }
 
 type AbsenceType = 'Vacation' | 'Parental Leave' | 'Unpaid Leave'
@@ -28,7 +30,34 @@ const ABSENCE_ITEMS = [
   { label: 'Unpaid Leave', value: 'Unpaid Leave', icon: <AlertCircle className="w-4 h-4 text-[#FBBB00]" /> },
 ]
 
-export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestPanelProps) {
+const STORAGE_KEY = 'absence_request_draft'
+
+// Helper to serialize requests for localStorage
+const serializeRequests = (requests: AbsenceRequest[]) => {
+  return JSON.stringify(requests.map(r => ({
+    id: r.id,
+    type: r.type,
+    startDate: r.startDate.toISOString(),
+    endDate: r.endDate.toISOString()
+  })))
+}
+
+// Helper to deserialize requests from localStorage
+const deserializeRequests = (json: string): AbsenceRequest[] => {
+  try {
+    const data = JSON.parse(json)
+    return data.map((r: any) => ({
+      id: r.id,
+      type: r.type as AbsenceType,
+      startDate: new Date(r.startDate),
+      endDate: new Date(r.endDate)
+    }))
+  } catch {
+    return []
+  }
+}
+
+export default function AbsenceRequestPanel({ isOpen, onClose, prefilledRequest }: AbsenceRequestPanelProps) {
   const [selectedType, setSelectedType] = useState<string>('')
   const [requests, setRequests] = useState<AbsenceRequest[]>([])
   const [currentMonth, setCurrentMonth] = useState(new Date())
@@ -37,18 +66,110 @@ export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestP
     end: null,
   })
   const [isSending, setIsSending] = useState(false)
+  const [showEmailDialog, setShowEmailDialog] = useState(false)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error'; isVisible: boolean }>({
     message: '',
     type: 'success',
     isVisible: false
   })
 
-  // Reset state when panel closes
+  // Load from localStorage when panel opens
+  useEffect(() => {
+    if (isOpen && typeof window !== 'undefined') {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const data = JSON.parse(stored)
+        console.log('💾 Loading from localStorage:', data)
+        
+        if (data.selectedType) {
+          setSelectedType(data.selectedType)
+        }
+        if (data.requests) {
+          const restoredRequests = deserializeRequests(data.requests)
+          setRequests(restoredRequests)
+          
+          // Set calendar to first request's month if exists
+          if (restoredRequests.length > 0) {
+            setCurrentMonth(restoredRequests[0].startDate)
+          }
+        }
+      }
+    }
+  }, [isOpen])
+
+  // Save to localStorage whenever requests or selectedType changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && isOpen) {
+      const data = {
+        selectedType,
+        requests: serializeRequests(requests)
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+      console.log('💾 Saved to localStorage:', data)
+    }
+  }, [requests, selectedType, isOpen])
+
+  // Handle prefilled request from agent
+  useEffect(() => {
+    if (prefilledRequest && isOpen) {
+        console.log('📝 Prefilled request received:', prefilledRequest)
+        
+        // Parse dates properly - ensure YYYY-MM-DD format is parsed correctly
+        // new Date() can be unreliable, so we parse manually
+        const parseDate = (dateStr: string): Date => {
+            const [year, month, day] = dateStr.split('-').map(Number)
+            return new Date(year, month - 1, day) // month is 0-indexed
+        }
+        
+        const start = parseDate(prefilledRequest.startDate)
+        const end = parseDate(prefilledRequest.endDate)
+        
+        console.log('📅 Parsed dates:', { start, end })
+        
+        // Validate dates
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+            console.error('❌ Invalid dates:', { start, end })
+            return
+        }
+
+        const newRequest: AbsenceRequest = {
+            id: Math.random().toString(36).substr(2, 9),
+            type: prefilledRequest.type as AbsenceType,
+            startDate: start,
+            endDate: end
+        }
+        
+        console.log('✅ Creating absence request:', newRequest)
+        
+        // Check if this request is already added (simple duplicate check)
+        setRequests(prev => {
+             const exists = prev.some(r => 
+                 r.startDate.getTime() === start.getTime() && 
+                 r.endDate.getTime() === end.getTime() &&
+                 r.type === prefilledRequest.type
+             )
+             if (exists) {
+                 console.log('⚠️ Request already exists, skipping')
+                 return prev
+             }
+             console.log('✅ Adding request to list')
+             return [...prev, newRequest]
+        })
+        
+        // Set the selected type in the dropdown
+        setSelectedType(prefilledRequest.type)
+        console.log('✅ Selected type:', prefilledRequest.type)
+        
+        // Jump to the start month
+        setCurrentMonth(start)
+        console.log('✅ Set current month to:', start)
+    }
+  }, [prefilledRequest, isOpen])
+
+  // Clear selection and toast when panel closes (but keep requests and type in localStorage)
   useEffect(() => {
     if (!isOpen) {
-      setRequests([])
       setSelection({ start: null, end: null })
-      setSelectedType('')
       setToast(prev => ({ ...prev, isVisible: false }))
     }
   }, [isOpen])
@@ -71,16 +192,32 @@ export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestP
       return
     }
 
-    // In a real scenario, we would need the provider token here.
-    // Since Supabase auth exchange happens on callback, the token might be in session.provider_token
-    // However, type definitions might not show it. We'll try to get it or fall back to error.
-    // Note: Supabase JS client v2 session type includes provider_token.
     const accessToken = session.provider_token
 
     if (!accessToken) {
-        // If we don't have the token (maybe session persisted but token didn't), ask to sign in again
-        showToast('Please sign in again to refresh email permissions', 'error')
-        return
+      showToast('Please sign in again to refresh email permissions', 'error')
+      return
+    }
+
+    // Show email recipient dialog
+    setShowEmailDialog(true)
+  }
+
+  const handleSendToEmail = async (recipientEmail: string) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    
+    if (!session) {
+      showToast('You must be signed in to Visma email', 'error')
+      setShowEmailDialog(false)
+      return
+    }
+
+    const accessToken = session.provider_token
+
+    if (!accessToken) {
+      showToast('Please sign in again to refresh email permissions', 'error')
+      setShowEmailDialog(false)
+      return
     }
 
     setIsSending(true)
@@ -113,6 +250,7 @@ export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestP
           accessToken,
           subject,
           body,
+          to: recipientEmail,
         }),
       })
 
@@ -122,8 +260,16 @@ export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestP
         throw new Error(data.error || 'Failed to send email')
       }
 
-      showToast('Email sent successfully!', 'success')
-      setRequests([]) // Clear requests on success
+      showToast(`Email sent successfully to ${recipientEmail}!`, 'success')
+      setShowEmailDialog(false)
+      
+      // Clear localStorage and state on success
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(STORAGE_KEY)
+        console.log('💾 Cleared localStorage after successful send')
+      }
+      setRequests([])
+      setSelectedType('')
       
       // Optional: close panel after a delay
       setTimeout(() => onClose(), 2000)
@@ -271,10 +417,17 @@ export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestP
         onClose={() => setToast({ ...toast, isVisible: false })}
       />
       
+      <EmailRecipientDialog
+        isOpen={showEmailDialog}
+        onClose={() => setShowEmailDialog(false)}
+        onSend={handleSendToEmail}
+        isSending={isSending}
+      />
+      
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop - Lower z-index than ElevenLabs widget */}
             <motion.div
               key="absence-backdrop"
               initial={{ opacity: 0 }}
@@ -286,7 +439,7 @@ export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestP
               style={{ pointerEvents: 'auto' }}
             />
 
-            {/* Side Panel */}
+            {/* Side Panel - Lower z-index than ElevenLabs widget (which is z-[999999]) */}
             <motion.div
               key="absence-panel"
               initial={{ x: '-100%' }}
@@ -472,7 +625,7 @@ export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestP
                   ) : (
                     <Send className="w-5 h-5" />
                   )}
-                  {isSending ? 'Sending...' : 'Send Emails'}
+                  {isSending ? 'Sending...' : requests.length === 1 ? 'Send Email' : 'Send Emails'}
                 </button>
               </div>
             </motion.div>

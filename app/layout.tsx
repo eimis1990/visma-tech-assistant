@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import { Outfit } from 'next/font/google'
+import { Outfit, Delius } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 
@@ -13,6 +13,13 @@ const helveticaNow = localFont({
 const outfit = Outfit({
   subsets: ['latin'],
   variable: '--font-outfit',
+  display: 'swap',
+})
+
+const delius = Delius({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-delius',
   display: 'swap',
 })
 
@@ -32,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${helveticaNow.variable} ${outfit.variable}`}>
+      <body className={`${helveticaNow.variable} ${outfit.variable} ${delius.variable}`}>
         {children}
         <Script
           src="https://unpkg.com/@elevenlabs/convai-widget-embed"

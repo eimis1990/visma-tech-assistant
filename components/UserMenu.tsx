@@ -50,7 +50,7 @@ export function UserMenu({ user }: UserMenuProps) {
       {/* Profile Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-100 transition-all duration-200"
+        className="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-gray-100 transition-all duration-200"
       >
         {/* Avatar */}
         <div className="relative">
@@ -77,17 +77,11 @@ export function UserMenu({ user }: UserMenuProps) {
           <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
         </div>
 
-        {/* User Info */}
-        <div className="hidden md:block text-left">
-          <p className="text-sm font-semibold text-gray-900">{userName}</p>
-          <p className="text-xs text-gray-500">{userEmail}</p>
-        </div>
-
         {/* Dropdown Arrow */}
         <motion.svg
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          className="w-4 h-4 text-gray-500 hidden md:block"
+          className="w-4 h-4 text-gray-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

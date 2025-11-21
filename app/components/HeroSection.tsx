@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { LayoutGroup, motion } from 'framer-motion'
-import { TextRotate } from '@/components/ui/text-rotate'
+import { motion } from 'framer-motion'
+import { LayoutTextFlip } from '@/components/ui/layout-text-flip'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import KudosCalculatorPanel from '@/components/KudosCalculatorPanel'
 import DocumentsPanel from '@/components/DocumentsPanel'
-import AbsenceRequestPanel from '@/components/AbsenceRequestPanel'
+
+interface HeroSectionProps {
+  onOpenAbsencePanel: () => void
+}
 
 const searchCategories = [
   {
@@ -48,19 +51,9 @@ const searchCategories = [
   },
 ]
 
-export default function HeroSection() {
+export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
   const [isKudosPanelOpen, setIsKudosPanelOpen] = useState(false)
   const [isDocumentsPanelOpen, setIsDocumentsPanelOpen] = useState(false)
-  const [isAbsencePanelOpen, setIsAbsencePanelOpen] = useState(false)
-  const [currentIconIndex, setCurrentIconIndex] = useState(0)
-
-  // Rotate icon every 3 seconds to match text rotation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIconIndex((prev) => (prev + 1) % searchCategories.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
 
   const handleTryNow = () => {
     // Open ElevenLabs widget by finding and clicking the button inside it
@@ -91,8 +84,8 @@ export default function HeroSection() {
           <span className="text-xs font-medium text-white">Visma Tech Assistant</span>
         </motion.div>
 
-        <motion.h1
-          className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight tracking-tight space-y-1 md:space-y-4"
+        <motion.div
+          className="flex flex-col items-center justify-center gap-2 text-center"
           style={{
             fontFamily:
               "var(--font-helvetica-now), var(--font-outfit), 'Helvetica Neue', sans-serif",
@@ -101,44 +94,24 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2, ease: 'easeOut', delay: 0.3 }}
         >
-          <span className="inline-block bg-gradient-to-r from-gray-700 to-gray-800 bg-clip-text text-transparent pb-2">Ask anything about </span>
-          <LayoutGroup>
-            <motion.span layout className="flex whitespace-pre items-center gap-3 md:gap-4">
-              <motion.div
-                animate={{
-                  color: searchCategories[currentIconIndex].color
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <TextRotate
-                  texts={[
-                    'Onboarding',
-                    'Documents',
-                    'Employees',
-                    'Kudos',
-                    'Absence',
-                    'Handbook',
-                  ]}
-                  mainClassName="overflow-hidden py-0 pb-2 md:pb-4 rounded-xl"
-                  staggerDuration={0.03}
-                  staggerFrom="last"
-                  rotationInterval={3000}
-                  transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-                />
-              </motion.div>
-              <motion.img
-                key={searchCategories[currentIconIndex].iconSrc}
-                src={searchCategories[currentIconIndex].iconSrc}
-                alt="category icon"
-                className="w-14 h-14 md:w-20 md:h-20 object-contain"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
-              />
-            </motion.span>
-          </LayoutGroup>
-        </motion.h1>
+          <div className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-normal text-black leading-tight tracking-tight px-2 py-2">
+            Ask anything about
+          </div>
+          <div className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl mt-1">
+            <LayoutTextFlip
+              text=""
+              words={[
+                'Onboarding',
+                'Documents',
+                'Employees',
+                'Kudos',
+                'Absence',
+                'Handbook',
+              ]}
+              duration={3000}
+            />
+          </div>
+        </motion.div>
       </div>
 
       {/* Try Now Button */}
@@ -151,7 +124,7 @@ export default function HeroSection() {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <span className="relative z-10 flex-1 text-center">Try Now!</span>
+        <span className="relative z-10 flex-1 text-center">Try Now</span>
         <div className="relative z-10 w-9 h-9 rounded-full bg-[#2a2a2a] group-hover:bg-[#3a3a3a] flex items-center justify-center transition-colors duration-300 flex-shrink-0">
           <ArrowRight className="w-4 h-4 duration-300 group-hover:translate-x-1" />
         </div>
@@ -175,9 +148,9 @@ export default function HeroSection() {
               onClick={() => {
                 if (isKudosCard) setIsKudosPanelOpen(true)
                 if (isDocumentsCard) setIsDocumentsPanelOpen(true)
-                if (isAbsenceCard) setIsAbsencePanelOpen(true)
+                if (isAbsenceCard) onOpenAbsencePanel()
               }}
-              className="relative p-5 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 cursor-pointer group"
+              className="relative p-5 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 cursor-pointer group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
@@ -213,12 +186,6 @@ export default function HeroSection() {
       <DocumentsPanel
         isOpen={isDocumentsPanelOpen}
         onClose={() => setIsDocumentsPanelOpen(false)}
-      />
-
-      {/* Absence Request Panel */}
-      <AbsenceRequestPanel
-        isOpen={isAbsencePanelOpen}
-        onClose={() => setIsAbsencePanelOpen(false)}
       />
 
       {/* Footer Links */}
