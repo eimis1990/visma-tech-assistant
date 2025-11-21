@@ -1,7 +1,11 @@
+import PolicyHeader from '@/components/PolicyHeader'
+
 export default function TermsOfService() {
   return (
-    <div className="min-h-screen bg-white py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-white">
+      <PolicyHeader />
+      <div className="py-32 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Terms of Service</h1>
         
         <div className="prose prose-gray max-w-none space-y-6">
@@ -43,6 +47,7 @@ export default function TermsOfService() {
           </section>
         </div>
       </div>
+    </div>
     </div>
   )
 }
