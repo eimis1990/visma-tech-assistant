@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ExternalLink } from 'lucide-react'
+import Image from 'next/image'
 
 interface DocumentsPanelProps {
   isOpen: boolean
@@ -97,9 +98,11 @@ export default function DocumentsPanel({ isOpen, onClose }: DocumentsPanelProps)
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1.5">
-                          <img
+                          <Image
                             src="/card icons/documents-icon.png"
                             alt="document icon"
+                            width={40}
+                            height={40}
                             className="w-10 h-10 object-contain flex-shrink-0"
                           />
                           <h3 className="text-base font-semibold text-gray-900 truncate">

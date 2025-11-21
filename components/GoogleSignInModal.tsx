@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Modal } from './ui/modal'
 import { motion } from 'framer-motion'
 import { signInWithGoogle } from '@/lib/auth'
@@ -38,9 +39,11 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             transition={{ delay: 0.1, type: 'spring', bounce: 0.5 }}
             className="flex items-center justify-center mx-auto mb-6"
           >
-            <img
+            <Image
               src="/vtech-logo.png"
               alt="ViTech Logo"
+              width={240}
+              height={64}
               className="h-16 w-auto"
             />
           </motion.div>
@@ -50,7 +53,7 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-2xl font-bold text-gray-900 mb-2"
-            style={{ fontFamily: "var(--font-helvetica-now), 'Outfit', 'Helvetica Neue', sans-serif" }}
+            style={{ fontFamily: "var(--font-helvetica-now), var(--font-outfit), 'Helvetica Neue', sans-serif" }}
           >
             Welcome to Vitech
           </motion.h2>
@@ -60,7 +63,7 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="text-gray-600"
-            style={{ fontFamily: 'Outfit, sans-serif' }}
+            style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
           >
             Sign in to access your personalized AI assistant and unlock all features
           </motion.p>
@@ -76,7 +79,7 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             onClick={handleGoogleSignIn}
             disabled={isLoading}
             className="w-full flex items-center justify-center gap-3 bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group"
-            style={{ fontFamily: 'Outfit, sans-serif' }}
+            style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-gray-600 border-t-white rounded-full animate-spin" />
@@ -121,7 +124,7 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="text-center text-xs text-gray-500 mt-6"
-          style={{ fontFamily: 'Outfit, sans-serif' }}
+          style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
         >
           By continuing, you agree to our Terms of Service and Privacy Policy
         </motion.p>

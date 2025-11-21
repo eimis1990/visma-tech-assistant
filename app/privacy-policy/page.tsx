@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Introduction</h2>
             <p>
-              Visma Tech Assistant ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our internal assistant application.
+              Visma Tech Assistant (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our internal assistant application.
             </p>
           </section>
 
@@ -37,7 +37,7 @@ export default function PrivacyPolicy() {
               <li>Provide and maintain the Service.</li>
               <li>Authenticate your identity via Google OAuth.</li>
               <li>Send absence request emails on your behalf via the Gmail API.</li>
-              <li>Improve our AI assistant's accuracy and helpfulness.</li>
+              <li>Improve our AI assistant&apos;s accuracy and helpfulness.</li>
             </ul>
           </section>
 

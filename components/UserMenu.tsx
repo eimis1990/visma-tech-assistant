@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LogOut, User } from 'lucide-react'
 import { signOut } from '@/lib/auth'
@@ -54,15 +55,18 @@ export function UserMenu({ user }: UserMenuProps) {
         {/* Avatar */}
         <div className="relative">
           {userAvatar && !imageError ? (
-            <img
+            <Image
               src={userAvatar}
               referrerPolicy="no-referrer"
               alt={userName || 'User'}
+              width={40}
+              height={40}
               className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
               onError={(e) => {
                 console.error('Error loading avatar:', userAvatar, e)
                 setImageError(true)
               }}
+              unoptimized={userAvatar.startsWith('http')}
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">

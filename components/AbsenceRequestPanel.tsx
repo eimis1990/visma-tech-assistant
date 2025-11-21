@@ -49,7 +49,7 @@ export default function AbsenceRequestPanel({ isOpen, onClose }: AbsenceRequestP
       setRequests([])
       setSelection({ start: null, end: null })
       setSelectedType('')
-      setToast({ ...toast, isVisible: false })
+      setToast(prev => ({ ...prev, isVisible: false }))
     }
   }, [isOpen])
 

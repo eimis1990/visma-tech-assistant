@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { GoogleSignInModal } from '@/components/GoogleSignInModal'
 import { UserMenu } from '@/components/UserMenu'
@@ -10,12 +11,15 @@ import type { User } from '@supabase/supabase-js'
 const ViTechLogo = ({ className }: { className?: string }) => {
   return (
     <div className={cn('flex items-center gap-0', className)}>
-      <img
+      <Image
         src="/vtech-logo.png"
         alt="ViTech Logo"
+        width={120}
+        height={32}
         className="h-8 w-auto"
+        priority
       />
-      <span className="text-3xl font-medium text-black" style={{ fontFamily: 'Outfit, sans-serif' }}>vitech.</span>
+      <span className="text-3xl font-medium text-black" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>vitech.</span>
     </div>
   )
 }

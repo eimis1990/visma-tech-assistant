@@ -1,11 +1,18 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import { Outfit } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 
 const helveticaNow = localFont({
   src: '../public/helvetica-now-text-medium.woff2',
   variable: '--font-helvetica-now',
+  display: 'swap',
+})
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
   display: 'swap',
 })
 
@@ -25,12 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className={helveticaNow.variable}>
+      <body className={`${helveticaNow.variable} ${outfit.variable}`}>
         {children}
         <Script
           src="https://unpkg.com/@elevenlabs/convai-widget-embed"

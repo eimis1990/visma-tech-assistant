@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { LayoutGroup, motion } from 'framer-motion'
 import { TextRotate } from '@/components/ui/text-rotate'
 import { ArrowRight, Sparkles } from 'lucide-react'
@@ -94,7 +95,7 @@ export default function HeroSection() {
           className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight tracking-tight space-y-1 md:space-y-4"
           style={{
             fontFamily:
-              "var(--font-helvetica-now), 'Outfit', 'Helvetica Neue', sans-serif",
+              "var(--font-helvetica-now), var(--font-outfit), 'Helvetica Neue', sans-serif",
           }}
           animate={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 20 }}
@@ -182,9 +183,11 @@ export default function HeroSection() {
               transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
             >
               <div className="flex items-start justify-between">
-                <img
+                <Image
                   src={category.iconSrc}
                   alt={`${category.title} icon`}
+                  width={48}
+                  height={48}
                   className="w-12 h-12 object-contain mb-3 group-hover:scale-110 transition-transform"
                 />
                 {(isKudosCard || isDocumentsCard || isAbsenceCard) && (
