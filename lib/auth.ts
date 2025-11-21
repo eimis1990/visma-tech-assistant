@@ -10,6 +10,7 @@ export async function signInWithGoogle() {
     provider: 'google',
     options: {
       redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/callback`,
+      scopes: 'https://www.googleapis.com/auth/gmail.send',
       queryParams: {
         access_type: 'offline',
         prompt: 'consent',

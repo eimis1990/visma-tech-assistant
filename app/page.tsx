@@ -10,7 +10,7 @@ export default function Home() {
   const { documentData, isDrawerOpen, closeDrawer } = useElevenLabsTools()
 
   return (
-    <div className="min-h-screen w-full relative">
+    <div className="min-h-screen w-full relative bg-gradient-to-b from-white to-[#EFF2F5]">
       {/* Dashed Bottom Fade Grid */}
       <div
         className="absolute inset-0 z-0"

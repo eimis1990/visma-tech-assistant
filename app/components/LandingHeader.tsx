@@ -72,7 +72,7 @@ export default function LandingHeader() {
             // Show sign-in button when not signed in
             <button
               onClick={() => setIsSignInModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-gray-800 transition-all duration-200 text-sm font-medium text-white rounded-xl shadow-lg hover:shadow-xl hover:scale-105"
+              className="flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-gray-800 transition-all duration-200 text-sm font-medium text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

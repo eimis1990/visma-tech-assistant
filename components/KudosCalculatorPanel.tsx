@@ -54,19 +54,14 @@ export default function KudosCalculatorPanel({ isOpen, onClose }: KudosCalculato
             style={{ pointerEvents: 'auto' }}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] p-5 pb-4 text-[#1a1a1a]">
+            <div className="bg-white p-5 border-b border-gray-200">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 bg-black/10 rounded-xl backdrop-blur-sm">
-                    <Calculator className="w-5 h-5" />
-                  </div>
-                  <h2 className="text-xl font-bold">Kudos Calculator</h2>
-                </div>
+                <h2 className="text-xl font-semibold text-gray-900">Kudos Calculator</h2>
                 <button
                   onClick={onClose}
-                  className="p-1.5 hover:bg-black/10 rounded-xl transition-colors"
+                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5 text-gray-600" />
                 </button>
               </div>
 

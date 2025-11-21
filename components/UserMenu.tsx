@@ -27,6 +27,10 @@ export function UserMenu({ user }: UserMenuProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  useEffect(() => {
+    console.log('User metadata:', user.user_metadata)
+  }, [user])
+
   const handleSignOut = async () => {
     try {
       await signOut()
@@ -52,9 +56,13 @@ export function UserMenu({ user }: UserMenuProps) {
           {userAvatar && !imageError ? (
             <img
               src={userAvatar}
+              referrerPolicy="no-referrer"
               alt={userName || 'User'}
               className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
-              onError={() => setImageError(true)}
+              onError={(e) => {
+                console.error('Error loading avatar:', userAvatar, e)
+                setImageError(true)
+              }}
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">

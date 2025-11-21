@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import { LayoutGroup, motion } from 'framer-motion'
 import { TextRotate } from '@/components/ui/text-rotate'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Sparkles } from 'lucide-react'
 import KudosCalculatorPanel from '@/components/KudosCalculatorPanel'
+import DocumentsPanel from '@/components/DocumentsPanel'
+import AbsenceRequestPanel from '@/components/AbsenceRequestPanel'
 
 const searchCategories = [
   {
@@ -47,6 +49,8 @@ const searchCategories = [
 
 export default function HeroSection() {
   const [isKudosPanelOpen, setIsKudosPanelOpen] = useState(false)
+  const [isDocumentsPanelOpen, setIsDocumentsPanelOpen] = useState(false)
+  const [isAbsencePanelOpen, setIsAbsencePanelOpen] = useState(false)
   const [currentIconIndex, setCurrentIconIndex] = useState(0)
 
   // Rotate icon every 3 seconds to match text rotation
@@ -75,6 +79,17 @@ export default function HeroSection() {
   return (
     <section className="w-full h-screen overflow-hidden flex flex-col items-center justify-center relative px-4">
       <div className="flex flex-col justify-center items-center w-[250px] sm:w-[300px] md:w-[500px] lg:w-[700px] z-50 pointer-events-auto mb-12">
+        {/* AI Badge */}
+        <motion.div
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-gray-700 to-gray-800 border border-[#FBBB00]/20 mb-6"
+          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.2, ease: 'easeOut', delay: 0.1 }}
+        >
+          <Sparkles className="w-4 h-4 text-white" />
+          <span className="text-xs font-medium text-white">Visma Tech Assistant</span>
+        </motion.div>
+
         <motion.h1
           className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-center w-full justify-center items-center flex-col flex whitespace-pre leading-tight tracking-tight space-y-1 md:space-y-4"
           style={{
@@ -85,7 +100,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2, ease: 'easeOut', delay: 0.3 }}
         >
-          <span>Ask anything about </span>
+          <span className="inline-block bg-gradient-to-r from-gray-700 to-gray-800 bg-clip-text text-transparent pb-2">Ask anything about </span>
           <LayoutGroup>
             <motion.span layout className="flex whitespace-pre items-center gap-3 md:gap-4">
               <motion.div
@@ -123,15 +138,6 @@ export default function HeroSection() {
             </motion.span>
           </LayoutGroup>
         </motion.h1>
-        <motion.p
-          className="text-sm sm:text-lg md:text-xl lg:text-1xl text-center pt-2 sm:pt-3 md:pt-4 lg:pt-5 text-black font-medium"
-          style={{ fontFamily: 'Outfit, sans-serif' }}
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.2, ease: 'easeOut', delay: 0.5 }}
-        >
-          Get instant answers to your questions with our AI Assistant
-        </motion.p>
       </div>
 
       {/* Try Now Button */}
@@ -159,11 +165,17 @@ export default function HeroSection() {
       >
         {searchCategories.map((category, index) => {
           const isKudosCard = category.title === 'Kudos Calculator'
+          const isDocumentsCard = category.title === 'Documents'
+          const isAbsenceCard = category.title === 'Absence Requests'
 
           return (
             <motion.div
               key={category.title}
-              onClick={() => isKudosCard && setIsKudosPanelOpen(true)}
+              onClick={() => {
+                if (isKudosCard) setIsKudosPanelOpen(true)
+                if (isDocumentsCard) setIsDocumentsPanelOpen(true)
+                if (isAbsenceCard) setIsAbsencePanelOpen(true)
+              }}
               className="relative p-5 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 cursor-pointer group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -175,7 +187,7 @@ export default function HeroSection() {
                   alt={`${category.title} icon`}
                   className="w-12 h-12 object-contain mb-3 group-hover:scale-110 transition-transform"
                 />
-                {isKudosCard && (
+                {(isKudosCard || isDocumentsCard || isAbsenceCard) && (
                   <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 )}
               </div>
@@ -193,6 +205,33 @@ export default function HeroSection() {
         isOpen={isKudosPanelOpen}
         onClose={() => setIsKudosPanelOpen(false)}
       />
+
+      {/* Documents Panel */}
+      <DocumentsPanel
+        isOpen={isDocumentsPanelOpen}
+        onClose={() => setIsDocumentsPanelOpen(false)}
+      />
+
+      {/* Absence Request Panel */}
+      <AbsenceRequestPanel
+        isOpen={isAbsencePanelOpen}
+        onClose={() => setIsAbsencePanelOpen(false)}
+      />
+
+      {/* Footer Links */}
+      <motion.div 
+        className="absolute bottom-4 left-4 flex gap-4 text-xs text-gray-500 z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
+        <a href="/privacy-policy" className="hover:text-gray-900 hover:underline transition-colors">
+          Privacy Policy
+        </a>
+        <a href="/terms-of-service" className="hover:text-gray-900 hover:underline transition-colors">
+          Terms of Service
+        </a>
+      </motion.div>
     </section>
   )
 }
