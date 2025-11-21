@@ -31,9 +31,9 @@ export function SmoothTabs({ tabs, activeTab, onChange }: SmoothTabsProps) {
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className={`relative ${flexClass} py-1.5 text-sm font-medium rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 ${
+            className={`relative ${flexClass} py-2.5 text-sm font-medium rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 ${
               isActive
-                ? 'text-[#1a1a1a] bg-white shadow-lg'
+                ? 'text-[#1a1a1a] bg-white shadow-sm'
                 : 'text-[#1a1a1a]/70 hover:text-[#1a1a1a]'
             }`}
           >

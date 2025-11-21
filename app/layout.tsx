@@ -24,12 +24,8 @@ const delius = Delius({
 })
 
 export const metadata: Metadata = {
-  title: 'ViTech Assistant',
+  title: 'Vitech Assistant',
   description: 'AI-powered RAG assistant for finding information',
-  icons: {
-    icon: '/vtech-logo.png',
-    apple: '/vtech-logo.png',
-  },
 }
 
 export default function RootLayout({
