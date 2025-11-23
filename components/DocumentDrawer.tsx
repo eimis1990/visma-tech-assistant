@@ -7,8 +7,9 @@
 
 import { Modal } from "@/components/ui/modal";
 import { motion } from "framer-motion";
-import { FileText, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface DocumentDrawerProps {
     isOpen: boolean;
@@ -43,68 +44,45 @@ export default function DocumentDrawer({
             <motion.div
                 initial="hidden"
                 animate="visible"
-                className="p-6 space-y-6"
+                className="p-8 flex flex-col items-center text-center"
             >
                 {/* Header */}
-                <motion.div variants={itemVariants} className="space-y-3">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 shadow-inner">
-                            <FileText className="w-6 h-6 text-blue-600" />
+                <motion.div variants={itemVariants} className="flex flex-col items-center mb-8 w-full">
+                    <div className="relative flex items-center justify-center w-24 h-24 mb-6 rounded-3xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                        <div className="relative w-14 h-14">
+                            <Image
+                                src="/card icons/documents-icon.png"
+                                alt="Document"
+                                fill
+                                className="object-contain"
+                            />
                         </div>
-                        <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
-                            {title}
-                        </h2>
                     </div>
-                    <p className="text-sm text-gray-600">
+                    
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3 leading-tight" style={{ fontFamily: "var(--font-helvetica-now), var(--font-outfit), sans-serif" }}>
+                        {title}
+                    </h2>
+                    
+                    <p className="text-gray-500 text-base max-w-[280px]" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
                         {description}
                     </p>
                 </motion.div>
 
                 {/* Actions */}
-                <motion.div variants={itemVariants} className="flex flex-col gap-3">
+                <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full">
                     <Link
                         href={documentUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={onClose}
-                        className="group relative overflow-hidden flex items-center justify-center h-11 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-semibold tracking-wide shadow-lg shadow-blue-500/20 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/30 hover:from-blue-600 hover:to-blue-700"
+                        className="group relative w-full flex items-center justify-center h-12 rounded-xl bg-black hover:bg-gray-800 text-white font-medium text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                        style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
                     >
-                        <motion.span
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%]"
-                            whileHover={{
-                                x: ["-200%", "200%"],
-                            }}
-                            transition={{
-                                duration: 1.5,
-                                ease: "easeInOut",
-                                repeat: 0,
-                            }}
-                        />
-                        <span className="relative flex items-center gap-2">
+                        <span className="relative flex items-center gap-2.5">
                             Open Document
-                            <motion.div
-                                animate={{
-                                    rotate: [0, 15, -15, 0],
-                                    y: [0, -2, 2, 0],
-                                }}
-                                transition={{
-                                    duration: 2,
-                                    ease: "easeInOut",
-                                    repeat: Number.POSITIVE_INFINITY,
-                                    repeatDelay: 1,
-                                }}
-                            >
-                                <ExternalLink className="w-4 h-4" />
-                            </motion.div>
+                            <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                         </span>
                     </Link>
-
-                    <button
-                        onClick={onClose}
-                        className="h-11 rounded-xl border border-gray-200 hover:bg-gray-100 text-sm font-semibold transition-colors"
-                    >
-                        Close
-                    </button>
                 </motion.div>
             </motion.div>
         </Modal>
