@@ -28,6 +28,15 @@ export default function LandingHeader() {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     // Check current session
@@ -57,7 +66,15 @@ export default function LandingHeader() {
   }
 
   return (
-    <header className="fixed z-50 w-full pt-4 md:pt-6" style={{ zIndex: 60 }}>
+    <header 
+      className={cn(
+        "fixed z-50 w-full transition-all duration-300",
+        isScrolled 
+          ? "bg-white/90 backdrop-blur-md shadow-sm py-4 md:bg-transparent md:shadow-none md:py-6 md:backdrop-blur-none" 
+          : "pt-4 md:pt-6 bg-transparent"
+      )}
+      style={{ zIndex: 60 }}
+    >
       <div className="flex items-center justify-between w-full px-6 md:px-[50px]">
         {/* Logo - Left Side */}
         <ViTechLogo />

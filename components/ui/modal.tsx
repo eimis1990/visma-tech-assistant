@@ -52,7 +52,7 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
           />
 
           {/* Modal */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -60,7 +60,7 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
               transition={{ type: 'spring', duration: 0.5, bounce: 0.3 }}
               onClick={(e) => e.stopPropagation()}
               className={cn(
-                'relative bg-white rounded-2xl shadow-2xl max-w-md w-full',
+                'relative bg-white rounded-2xl shadow-2xl max-w-md w-full pointer-events-auto',
                 className
               )}
             >
