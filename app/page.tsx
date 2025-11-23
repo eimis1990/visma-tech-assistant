@@ -70,7 +70,7 @@ export default function Home() {
       />
 
       {/* Content */}
-      <div className="flex flex-col h-screen relative z-10">
+      <div className="flex flex-col min-h-screen relative z-10">
         <LandingHeader />
 
         <main className="flex-1 flex flex-col">

@@ -52,9 +52,13 @@ export default function LandingHeader() {
     return () => subscription.unsubscribe()
   }, [])
 
+  const handleSignIn = () => {
+    setIsSignInModalOpen(true)
+  }
+
   return (
-    <header className="fixed z-50 w-full pt-6" style={{ zIndex: 60 }}>
-      <div className="flex items-center justify-between w-full px-[50px]">
+    <header className="fixed z-50 w-full pt-4 md:pt-6" style={{ zIndex: 60 }}>
+      <div className="flex items-center justify-between w-full px-6 md:px-[50px]">
         {/* Logo - Left Side */}
         <ViTechLogo />
 
@@ -75,7 +79,7 @@ export default function LandingHeader() {
           ) : (
             // Show sign-in button when not signed in
             <button
-              onClick={() => setIsSignInModalOpen(true)}
+              onClick={handleSignIn}
               className="flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-gray-800 transition-all duration-200 text-sm font-medium text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">

@@ -55,6 +55,13 @@ export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
   const [isKudosPanelOpen, setIsKudosPanelOpen] = useState(false)
   const [isDocumentsPanelOpen, setIsDocumentsPanelOpen] = useState(false)
 
+  const playClickSound = () => {
+    console.log('🔊 Attempting to play card click sound')
+    const audio = new Audio('/sounds/card-click.wav')
+    audio.volume = 0.5
+    audio.play().catch((err) => console.error('Error playing sound:', err))
+  }
+
   const handleTryNow = () => {
     // Open ElevenLabs widget by finding and clicking the button inside it
     const widget = document.querySelector('elevenlabs-convai')
@@ -71,7 +78,7 @@ export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
   }
 
   return (
-    <section className="w-full h-screen overflow-hidden flex flex-col items-center justify-center relative px-4">
+    <section className="w-full min-h-screen flex flex-col items-center justify-start lg:justify-center relative px-4 pt-24 lg:pt-0 pb-24 lg:pb-8">
       <div className="flex flex-col justify-center items-center w-[250px] sm:w-[300px] md:w-[500px] lg:w-[700px] z-50 pointer-events-auto mb-12">
         {/* AI Badge */}
         <motion.div
@@ -146,6 +153,9 @@ export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
             <motion.div
               key={category.title}
               onClick={() => {
+                if (isKudosCard || isDocumentsCard || isAbsenceCard) {
+                  playClickSound()
+                }
                 if (isKudosCard) setIsKudosPanelOpen(true)
                 if (isDocumentsCard) setIsDocumentsPanelOpen(true)
                 if (isAbsenceCard) onOpenAbsencePanel()
