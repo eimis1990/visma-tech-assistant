@@ -29,7 +29,7 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} className="bg-white shadow-none border border-gray-100">
       <div className="p-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -39,13 +39,20 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             transition={{ delay: 0.1, type: 'spring', bounce: 0.5 }}
             className="flex items-center justify-center mx-auto mb-6"
           >
-            <Image
-              src="/vtech-logo.png"
-              alt="ViTech Logo"
-              width={240}
-              height={64}
-              className="h-16 w-auto"
-            />
+            <div className="relative">
+              <Image
+                src="/card icons/absence-icon.png"
+                alt="Absence Request"
+                width={80}
+                height={80}
+                className="h-20 w-20"
+              />
+              <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1.5 border border-gray-100">
+                <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+            </div>
           </motion.div>
 
           <motion.h2
@@ -55,17 +62,17 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             className="text-2xl font-bold text-gray-900 mb-2"
             style={{ fontFamily: "var(--font-helvetica-now), var(--font-outfit), 'Helvetica Neue', sans-serif" }}
           >
-            Welcome to Vitech
+            Sign in to Send Request
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-gray-600"
+            className="text-gray-600 max-w-xs mx-auto"
             style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
           >
-            Sign in to access your personalized AI assistant and unlock all features
+            To submit absence requests from your email, we need you to sign in first.
           </motion.p>
         </div>
 
