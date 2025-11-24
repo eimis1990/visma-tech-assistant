@@ -1,6 +1,14 @@
+'use client'
+
+import { useEffect } from 'react'
 import PolicyHeader from '@/components/PolicyHeader'
+import { track } from '@vercel/analytics/react'
 
 export default function PrivacyPolicy() {
+  useEffect(() => {
+    track('Privacy Policy View')
+  }, [])
+
   return (
     <div className="min-h-screen bg-white">
       <PolicyHeader />

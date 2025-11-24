@@ -1,6 +1,14 @@
+'use client'
+
+import { useEffect } from 'react'
 import PolicyHeader from '@/components/PolicyHeader'
+import { track } from '@vercel/analytics/react'
 
 export default function TermsOfService() {
+  useEffect(() => {
+    track('Terms of Service View')
+  }, [])
+
   return (
     <div className="min-h-screen bg-white">
       <PolicyHeader />
