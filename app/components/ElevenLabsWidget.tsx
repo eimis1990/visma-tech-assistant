@@ -34,6 +34,23 @@ export default function ElevenLabsWidget({ agentId }: ElevenLabsWidgetProps) {
       if (event.detail && event.detail.config) {
         // Register client tools on the event's config object
         event.detail.config.clientTools = {
+          get_current_time: async () => {
+            console.log("⏰ get_current_time tool called by agent!");
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+            const dateStr = now.toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            });
+            
+            const response = `Today is ${dateStr}, and the time is ${timeStr}.`;
+            console.log("📤 Returning time to agent:", response);
+            return response;
+          },
+
           open_document: async (params: { document_title: string; document_url: string }) => {
             console.log("📄 open_document tool called by agent!", params);
 

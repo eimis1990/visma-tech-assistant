@@ -87,6 +87,12 @@ Fills the absence request form with specific dates and absence type.
 - **Important**: You must calculate specific dates (YYYY-MM-DD) based on user input like "next Monday" or "rest of this week"
 - **Example**: User says "I need vacation from December 23rd to 27th" → Call this tool with those dates and type "Vacation"
 
+### 3. `get_current_time`
+Returns the current date and time of the user.
+- **When to use**: If you are unsure about the date/time, or if the user asks "what time is it?", or before calculating relative dates like "next Monday" if you don't have the current date context.
+- **Parameters**: None
+- **Returns**: Current date and time string (e.g. "Today is Friday, November 22, 2024, and the time is 2:30 PM.")
+
 ## Conversation Flow
 
 ### 1. Welcome and Introduction
