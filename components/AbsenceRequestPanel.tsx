@@ -8,6 +8,7 @@ import { ActionSearchBar } from '@/components/ui/action-search-bar'
 import { supabase } from '@/lib/supabase'
 import { Toast } from '@/components/ui/toast'
 import EmailRecipientDialog from '@/components/EmailRecipientDialog'
+import { track } from '@vercel/analytics/react'
 
 interface AbsenceRequestPanelProps {
   isOpen: boolean
@@ -262,6 +263,12 @@ export default function AbsenceRequestPanel({ isOpen, onClose, prefilledRequest 
 
       showToast(`Email sent successfully to ${recipientEmail}!`, 'success')
       setShowEmailDialog(false)
+      
+      track('Absence Request Sent', { 
+        count: requests.length, 
+        type: requests[0]?.type || 'Unknown',
+        recipient: recipientEmail
+      })
       
       // Clear localStorage and state on success
       if (typeof window !== 'undefined') {

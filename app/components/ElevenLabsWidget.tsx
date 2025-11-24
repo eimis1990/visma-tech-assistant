@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Script from "next/script";
+import { track } from '@vercel/analytics/react';
 
 // Declare the custom element for TypeScript
 declare global {
@@ -121,10 +122,19 @@ export default function ElevenLabsWidget({ agentId }: ElevenLabsWidgetProps) {
     // Listen for ElevenLabs widget events
     const handleElevenLabsEvent = (event: any) => {
       console.log('ElevenLabs widget event:', event.type, event.detail);
+      if (event.type === 'elevenlabs-convai:call' || event.type === 'elevenlabs-widget-connected') {
+         // Note: 'elevenlabs-convai:call' is the one that sets up client tools, 
+         // but 'elevenlabs-widget-connected' is likely the connection success event.
+         // Based on user request "when successfull conection were made":
+         if (event.type === 'elevenlabs-widget-connected') {
+             track('Agent Connected');
+         }
+      }
     };
 
     // Register event listeners
     window.addEventListener('elevenlabs-convai:call', handleConvAICall);
+    // Also track connection on call establishment if needed, but 'connected' event is safer for "connection"
     window.addEventListener('elevenlabs-widget-connected', handleElevenLabsEvent);
     window.addEventListener('elevenlabs-widget-disconnected', handleElevenLabsEvent);
     window.addEventListener('elevenlabs-widget-error', handleElevenLabsEvent);

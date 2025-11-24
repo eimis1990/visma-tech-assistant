@@ -7,6 +7,7 @@ import { LayoutTextFlip } from '@/components/ui/layout-text-flip'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import KudosCalculatorPanel from '@/components/KudosCalculatorPanel'
 import DocumentsPanel from '@/components/DocumentsPanel'
+import { track } from '@vercel/analytics/react'
 
 interface HeroSectionProps {
   onOpenAbsencePanel: () => void
@@ -155,6 +156,7 @@ export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
               onClick={() => {
                 if (isKudosCard || isDocumentsCard || isAbsenceCard) {
                   playClickSound()
+                  track('Card Pressed', { card: category.title })
                 }
                 if (isKudosCard) setIsKudosPanelOpen(true)
                 if (isDocumentsCard) setIsDocumentsPanelOpen(true)

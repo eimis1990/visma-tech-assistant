@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { Outfit, Delius } from 'next/font/google'
 import Script from 'next/script'
+import { Analytics } from "@vercel/analytics/next"
 import './globals.css'
 
 const helveticaNow = localFont({
@@ -37,6 +38,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${helveticaNow.variable} ${outfit.variable} ${delius.variable}`}>
         {children}
+        <Analytics />
         <Script
           src="https://unpkg.com/@elevenlabs/convai-widget-embed"
           strategy="afterInteractive"

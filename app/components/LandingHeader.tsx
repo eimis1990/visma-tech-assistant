@@ -7,6 +7,7 @@ import { GoogleSignInModal } from '@/components/GoogleSignInModal'
 import { UserMenu } from '@/components/UserMenu'
 import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
+import { track } from '@vercel/analytics/react'
 
 const ViTechLogo = ({ className }: { className?: string }) => {
   return (
@@ -44,6 +45,9 @@ export default function LandingHeader() {
       try {
         const { data: { user } } = await supabase.auth.getUser()
         setUser(user)
+        if (user) {
+          track('User Login', { userId: user.id, email: user.email || '' })
+        }
       } catch (error) {
         console.error('Error checking user:', error)
       } finally {
@@ -55,7 +59,11 @@ export default function LandingHeader() {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+      const user = session?.user ?? null
+      setUser(user)
+      if (user && _event === 'SIGNED_IN') {
+        track('User Login', { userId: user.id, email: user.email || '' })
+      }
     })
 
     return () => subscription.unsubscribe()
