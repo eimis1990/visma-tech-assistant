@@ -1,4 +1,17 @@
 import { supabase } from './supabase'
+import type { User } from '@supabase/supabase-js'
+
+const ALLOWED_EMAIL_DOMAINS = ['visma.com']
+
+/**
+ * Check if a user has a Visma email domain
+ * This is used to restrict access to certain features
+ */
+export function isVismaEmployee(user: User | null): boolean {
+  if (!user?.email) return false
+  const emailDomain = user.email.split('@')[1]?.toLowerCase()
+  return ALLOWED_EMAIL_DOMAINS.includes(emailDomain)
+}
 
 /**
  * Sign in with Google OAuth
@@ -14,6 +27,43 @@ export async function signInWithGoogle() {
       queryParams: {
         access_type: 'offline',
         prompt: 'consent',
+      },
+    },
+  })
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+/**
+ * Sign in with Email and Password
+ */
+export async function signInWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+/**
+ * Sign up with Email and Password
+ */
+export async function signUpWithEmail(email: string, password: string, username?: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: username,
       },
     },
   })

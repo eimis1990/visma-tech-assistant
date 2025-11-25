@@ -196,7 +196,7 @@ export default function AbsenceRequestPanel({ isOpen, onClose, prefilledRequest 
     const accessToken = session.provider_token
 
     if (!accessToken) {
-      showToast('Please sign in again to refresh email permissions', 'error')
+      showToast('This feature is only available for Google Sign-In with Visma email', 'error')
       return
     }
 

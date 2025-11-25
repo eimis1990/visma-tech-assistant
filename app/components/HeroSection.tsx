@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { LayoutTextFlip } from '@/components/ui/layout-text-flip'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, Sparkles, Lock } from 'lucide-react'
 import KudosCalculatorPanel from '@/components/KudosCalculatorPanel'
 import DocumentsPanel from '@/components/DocumentsPanel'
+import { RestrictedAccessModal } from '@/components/RestrictedAccessModal'
 import { track } from '@vercel/analytics/react'
 
 interface HeroSectionProps {
   onOpenAbsencePanel: () => void
+  isVismaEmployee: boolean
 }
 
 const searchCategories = [
@@ -52,9 +54,15 @@ const searchCategories = [
   },
 ]
 
-export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
+export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: HeroSectionProps) {
   const [isKudosPanelOpen, setIsKudosPanelOpen] = useState(false)
   const [isDocumentsPanelOpen, setIsDocumentsPanelOpen] = useState(false)
+  const [isRestrictedModalOpen, setIsRestrictedModalOpen] = useState(false)
+
+  // Debug log
+  useEffect(() => {
+    console.log('🔐 HeroSection isVismaEmployee prop:', isVismaEmployee)
+  }, [isVismaEmployee])
 
   const playClickSound = () => {
     console.log('🔊 Attempting to play card click sound')
@@ -64,6 +72,10 @@ export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
   }
 
   const handleTryNow = () => {
+    if (!isVismaEmployee) {
+      setIsRestrictedModalOpen(true)
+      return
+    }
     // Open ElevenLabs widget by finding and clicking the button inside it
     const widget = document.querySelector('elevenlabs-convai')
     if (widget && widget.shadowRoot) {
@@ -149,24 +161,35 @@ export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
           const isKudosCard = category.title === 'Kudos Calculator'
           const isDocumentsCard = category.title === 'Documents'
           const isAbsenceCard = category.title === 'Absence Requests'
+          const isRestrictedCard = isKudosCard || isDocumentsCard || isAbsenceCard
 
           return (
             <motion.div
               key={category.title}
               onClick={() => {
-                if (isKudosCard || isDocumentsCard || isAbsenceCard) {
+                if (isRestrictedCard) {
+                  if (!isVismaEmployee) {
+                    setIsRestrictedModalOpen(true)
+                    return
+                  }
                   playClickSound()
                   track('Card Pressed', { card: category.title })
                 }
-                if (isKudosCard) setIsKudosPanelOpen(true)
-                if (isDocumentsCard) setIsDocumentsPanelOpen(true)
-                if (isAbsenceCard) onOpenAbsencePanel()
+                if (isKudosCard && isVismaEmployee) setIsKudosPanelOpen(true)
+                if (isDocumentsCard && isVismaEmployee) setIsDocumentsPanelOpen(true)
+                if (isAbsenceCard && isVismaEmployee) onOpenAbsencePanel()
               }}
-              className="relative p-5 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 cursor-pointer group"
+              className={`relative p-5 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 cursor-pointer group ${isRestrictedCard && !isVismaEmployee ? 'opacity-70' : ''}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
             >
+              {/* Lock overlay for restricted cards */}
+              {isRestrictedCard && !isVismaEmployee && (
+                <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+                  <Lock className="w-3 h-3 text-gray-500" />
+                </div>
+              )}
               <div className="flex items-start justify-between">
                 <Image
                   src={category.iconSrc}
@@ -175,7 +198,7 @@ export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
                   height={48}
                   className="w-12 h-12 object-contain mb-3 group-hover:scale-110 transition-transform"
                 />
-                {(isKudosCard || isDocumentsCard || isAbsenceCard) && (
+                {isRestrictedCard && isVismaEmployee && (
                   <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 )}
               </div>
@@ -198,6 +221,12 @@ export default function HeroSection({ onOpenAbsencePanel }: HeroSectionProps) {
       <DocumentsPanel
         isOpen={isDocumentsPanelOpen}
         onClose={() => setIsDocumentsPanelOpen(false)}
+      />
+
+      {/* Restricted Access Modal */}
+      <RestrictedAccessModal
+        isOpen={isRestrictedModalOpen}
+        onClose={() => setIsRestrictedModalOpen(false)}
       />
 
       {/* Footer Links */}

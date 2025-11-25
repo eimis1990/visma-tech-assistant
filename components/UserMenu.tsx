@@ -35,7 +35,6 @@ export function UserMenu({ user }: UserMenuProps) {
   const handleSignOut = async () => {
     try {
       await signOut()
-      window.location.reload() // Reload to update UI
     } catch (error) {
       console.error('Error signing out:', error)
     }
@@ -69,7 +68,7 @@ export function UserMenu({ user }: UserMenuProps) {
               unoptimized={userAvatar.startsWith('http')}
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
               <User className="w-6 h-6 text-white" />
             </div>
           )}

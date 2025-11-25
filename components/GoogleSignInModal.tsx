@@ -4,32 +4,66 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { Modal } from './ui/modal'
 import { motion } from 'framer-motion'
-import { signInWithGoogle } from '@/lib/auth'
+import { signInWithGoogle, signInWithEmail, signUpWithEmail } from '@/lib/auth'
+import { Mail, Lock, Loader2, Eye, EyeOff, ArrowRight, User } from 'lucide-react'
 
 interface GoogleSignInModalProps {
   isOpen: boolean
   onClose: () => void
+  hideCloseButton?: boolean
 }
 
-export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
-  const [isLoading, setIsLoading] = useState(false)
+export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: GoogleSignInModalProps) {
+  const [isEmailLoading, setIsEmailLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [isSignUp, setIsSignUp] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email || !password || (isSignUp && !username)) return
+
+    try {
+      setIsEmailLoading(true)
+      setError(null)
+      
+      if (isSignUp) {
+        const { session } = await signUpWithEmail(email, password, username)
+        if (!session) {
+          setError('Please check your email to confirm your account')
+          return
+        }
+      } else {
+        await signInWithEmail(email, password)
+      }
+      onClose()
+    } catch (err) {
+      console.error('Auth error:', err)
+      setError(err instanceof Error ? err.message : 'Authentication failed')
+    } finally {
+      setIsEmailLoading(false)
+    }
+  }
 
   const handleGoogleSignIn = async () => {
     try {
-      setIsLoading(true)
+      setIsGoogleLoading(true)
       setError(null)
       await signInWithGoogle()
       // The redirect will happen automatically, no need to close modal
     } catch (err) {
       console.error('Sign in error:', err)
       setError(err instanceof Error ? err.message : 'Failed to sign in with Google')
-      setIsLoading(false)
+      setIsGoogleLoading(false)
     }
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="bg-white shadow-none border border-gray-100">
+    <Modal isOpen={isOpen} onClose={onClose} className="bg-white shadow-none border border-gray-100" hideCloseButton={hideCloseButton}>
       <div className="p-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -39,20 +73,14 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             transition={{ delay: 0.1, type: 'spring', bounce: 0.5 }}
             className="flex items-center justify-center mx-auto mb-6"
           >
-            <div className="relative">
-              <Image
-                src="/card icons/absence-icon.png"
-                alt="Absence Request"
-                width={80}
-                height={80}
-                className="h-20 w-20"
-              />
-              <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1.5 border border-gray-100">
-                <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-            </div>
+            <Image
+              src="/vtech-logo.png"
+              alt="ViTech Logo"
+              width={180}
+              height={48}
+              className="h-12 w-auto"
+              priority
+            />
           </motion.div>
 
           <motion.h2
@@ -62,7 +90,7 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             className="text-2xl font-bold text-gray-900 mb-2"
             style={{ fontFamily: "var(--font-helvetica-now), var(--font-outfit), 'Helvetica Neue', sans-serif" }}
           >
-            Sign in to Send Request
+            Sign In to ViTech
           </motion.h2>
 
           <motion.p
@@ -72,23 +100,112 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
             className="text-gray-600 max-w-xs mx-auto"
             style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
           >
-            To submit absence requests from your email, we need you to sign in first.
+            Please sign in with your Visma email to use this tool.
           </motion.p>
         </div>
 
-        {/* Google Sign In Button */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
+          {/* Email Form */}
+          <form onSubmit={handleEmailAuth} className="space-y-4">
+            <div className="space-y-2">
+              {isSignUp && (
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all duration-200"
+                    style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
+                    required={isSignUp}
+                  />
+                </div>
+              )}
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all duration-200"
+                  style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
+                  required
+                />
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all duration-200"
+                  style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isEmailLoading || isGoogleLoading}
+              className="w-full flex items-center justify-center gap-2 bg-[#FBBB00] hover:bg-[#e5aa00] text-black font-semibold py-3 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+              style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
+            >
+              {isEmailLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin text-black" />
+              ) : (
+                <>
+                  <span>{isSignUp ? 'Create Account' : 'Sign In'}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
+            >
+              {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+            </button>
+          </div>
+
+          {/* Separator */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with Google</span>
+            </div>
+          </div>
+
+          {/* Google Sign In Button */}
           <button
             onClick={handleGoogleSignIn}
-            disabled={isLoading}
+            disabled={isGoogleLoading || isEmailLoading}
             className="w-full flex items-center justify-center gap-3 bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group"
             style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
           >
-            {isLoading ? (
+            {isGoogleLoading ? (
               <div className="w-5 h-5 border-2 border-gray-600 border-t-white rounded-full animate-spin" />
             ) : (
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -110,8 +227,12 @@ export function GoogleSignInModal({ isOpen, onClose }: GoogleSignInModalProps) {
                 />
               </svg>
             )}
-            <span>{isLoading ? 'Signing in...' : 'Continue with Google'}</span>
+            <span>{isGoogleLoading ? 'Signing in...' : 'Continue with Google'}</span>
           </button>
+
+          <p className="text-center text-xs text-gray-500 mt-3 max-w-xs mx-auto leading-relaxed">
+            Sign in with Google using your Visma email to send absence requests directly from here.
+          </p>
         </motion.div>
 
         {/* Error message */}
