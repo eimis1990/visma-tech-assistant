@@ -183,18 +183,21 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
                 if (isAbsenceCard && isVismaEmployee) onOpenAbsencePanel()
                 if (isHandbookCard && isVismaEmployee) setIsHandbookPanelOpen(true)
               }}
-              className={`relative p-5 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 cursor-pointer group ${isRestrictedCard && !isVismaEmployee ? 'opacity-70' : ''}`}
+              className={`relative p-5 rounded-3xl bg-white border border-gray-200 shadow-sm hover:border-[#FBBB00]/50 hover:shadow-lg hover:shadow-[#FBBB00]/5 transition-all duration-300 hover:scale-105 cursor-pointer group overflow-hidden ${isRestrictedCard && !isVismaEmployee ? 'opacity-70' : ''}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
             >
+              {/* Subtle hover gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#FBBB00]/0 via-[#FBBB00]/5 to-[#FBBB00]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-3xl" />
+              
               {/* Lock overlay for restricted cards */}
               {isRestrictedCard && !isVismaEmployee && (
-                <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+                <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center z-10">
                   <Lock className="w-3 h-3 text-gray-500" />
                 </div>
               )}
-              <div className="flex items-start justify-between">
+              <div className="relative flex items-start justify-between">
                 <Image
                   src={category.iconSrc}
                   alt={`${category.title} icon`}
@@ -206,10 +209,10 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
                   <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 )}
               </div>
-              <h3 className="text-base font-semibold text-gray-900 mb-1.5">
+              <h3 className="relative text-base font-semibold text-gray-900 mb-1.5">
                 {category.title}
               </h3>
-              <p className="text-xs text-gray-600">{category.description}</p>
+              <p className="relative text-xs text-gray-600">{category.description}</p>
             </motion.div>
           )
         })}

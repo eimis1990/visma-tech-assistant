@@ -128,8 +128,17 @@ export default function DocumentsPanel({ isOpen, onClose }: DocumentsPanelProps)
 
             {/* Footer */}
             <div className="border-t border-gray-200 bg-white p-4">
-              <p className="text-xs text-gray-600 text-center">
-                Need help? Try asking the AI Assistant or contact HR
+              <a
+                href="https://drive.google.com/drive/u/3/folders/129DRZY2m8DfbXPSax0dzADDSZ3Oy6kQW"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] hover:from-[#e5a800] hover:to-[#FBBB00] text-[#1a1a1a] font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02]"
+              >
+                <ExternalLink className="w-4 h-4" />
+                View All Documents
+              </a>
+              <p className="text-xs text-gray-500 text-center mt-2">
+                Browse the full list of available documents in Google Drive
               </p>
             </div>
           </motion.div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Calculator, LogOut, ShoppingBag } from 'lucide-react'
+import { X, Calculator, LogOut, ShoppingBag, ExternalLink } from 'lucide-react'
 import { SmoothTabs } from '@/components/ui/smooth-tabs'
 
 interface KudosCalculatorPanelProps {
@@ -84,6 +84,22 @@ export default function KudosCalculatorPanel({ isOpen, onClose }: KudosCalculato
                 {activeTab === 'leaving' && <LeavingCalculator key="leaving" />}
                 {activeTab === 'buying-power' && <BuyingPowerCalculator key="buying-power" />}
               </AnimatePresence>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 bg-white p-4">
+              <a
+                href="https://docs.google.com/spreadsheets/d/1f5Pkpv4R1ez-eNQ9XqDTCZVGYm-SqT-m8CtxBBc2Zjw/edit?gid=0#gid=0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] hover:from-[#e5a800] hover:to-[#FBBB00] text-[#1a1a1a] font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02]"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Open Official Kudos Calculator
+              </a>
+              <p className="text-xs text-gray-500 text-center mt-2">
+                View the full spreadsheet with all calculations
+              </p>
             </div>
           </motion.div>
         </>
