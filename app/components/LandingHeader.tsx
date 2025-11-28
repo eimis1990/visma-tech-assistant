@@ -15,16 +15,15 @@ interface LandingHeaderProps {
 
 const ViTechLogo = ({ className }: { className?: string }) => {
   return (
-    <div className={cn('flex items-center gap-0', className)}>
+    <div className={cn('flex items-center', className)}>
       <Image
-        src="/vtech-logo.png"
-        alt="ViTech Logo"
-        width={120}
-        height={32}
-        className="h-8 w-auto"
+        src="/vitech-landing-logo.png"
+        alt="Vitech - Your Personal AI Assistant"
+        width={200}
+        height={56}
+        className="h-14 w-auto"
         priority
       />
-      <span className="text-3xl font-medium text-black" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>vitech.</span>
     </div>
   )
 }

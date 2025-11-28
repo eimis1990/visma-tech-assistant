@@ -65,7 +65,7 @@ export default function DocumentsPanel({ isOpen, onClose }: DocumentsPanelProps)
               damping: 30,
               duration: 0.3
             }}
-            className="fixed left-0 top-0 h-full w-full md:w-[450px] bg-white shadow-2xl z-[9999] overflow-hidden flex flex-col"
+            className="fixed left-0 top-0 h-full w-full md:w-[480px] bg-gradient-to-b from-white to-gray-50 shadow-2xl z-[9999] overflow-hidden flex flex-col"
             style={{ pointerEvents: 'auto' }}
           >
             {/* Header */}
@@ -84,49 +84,50 @@ export default function DocumentsPanel({ isOpen, onClose }: DocumentsPanelProps)
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-5">
-              <div className="space-y-3">
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-2">
                 {documents.map((doc, index) => (
                   <motion.button
                     key={doc.title}
                     onClick={() => handleDocumentClick(doc.url)}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="w-full group relative overflow-hidden bg-white border border-gray-200 rounded-xl p-4 hover:border-[#FBBB00] hover:shadow-md transition-all duration-300 text-left"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.03, duration: 0.3 }}
+                    className="w-full group relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-4 hover:border-[#FBBB00]/50 hover:shadow-lg hover:shadow-[#FBBB00]/5 transition-all duration-300 text-left"
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-4">
+                      {/* Icon */}
+                      <Image
+                        src="/card icons/documents-icon.png"
+                        alt="document icon"
+                        width={44}
+                        height={44}
+                        className="w-11 h-11 object-contain flex-shrink-0 group-hover:scale-110 transition-transform duration-300"
+                      />
+                      
+                      {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <Image
-                            src="/card icons/documents-icon.png"
-                            alt="document icon"
-                            width={40}
-                            height={40}
-                            className="w-10 h-10 object-contain flex-shrink-0"
-                          />
-                          <h3 className="text-base font-semibold text-gray-900 truncate">
-                            {doc.title}
-                          </h3>
-                        </div>
-                        <p className="text-xs text-gray-600 line-clamp-2">
+                        <h3 className="text-sm font-semibold text-gray-900 group-hover:text-[#1a1a1a] transition-colors">
+                          {doc.title}
+                        </h3>
+                        <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
                           {doc.description}
                         </p>
                       </div>
-                      <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-[#FBBB00]/10 flex items-center justify-center transition-colors">
-                        <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-[#FBBB00] transition-colors" />
-                      </div>
+
+                      {/* External Link Icon */}
+                      <ExternalLink className="w-4 h-4 text-gray-300 group-hover:text-[#FBBB00] transition-all duration-300 flex-shrink-0" />
                     </div>
 
-                    {/* Hover effect gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#FBBB00]/0 to-[#FBBB00]/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-xl" />
+                    {/* Subtle hover gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#FBBB00]/0 via-[#FBBB00]/0 to-[#FBBB00]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
                   </motion.button>
                 ))}
               </div>
             </div>
 
             {/* Footer */}
-            <div className="border-t border-gray-200 bg-gray-50 p-4">
+            <div className="border-t border-gray-200 bg-white p-4">
               <p className="text-xs text-gray-600 text-center">
                 Need help? Try asking the AI Assistant or contact HR
               </p>

@@ -7,6 +7,7 @@ import { LayoutTextFlip } from '@/components/ui/layout-text-flip'
 import { ArrowRight, Sparkles, Lock } from 'lucide-react'
 import KudosCalculatorPanel from '@/components/KudosCalculatorPanel'
 import DocumentsPanel from '@/components/DocumentsPanel'
+import HandbookPanel from '@/components/HandbookPanel'
 import { RestrictedAccessModal } from '@/components/RestrictedAccessModal'
 import { track } from '@vercel/analytics/react'
 
@@ -57,6 +58,7 @@ const searchCategories = [
 export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: HeroSectionProps) {
   const [isKudosPanelOpen, setIsKudosPanelOpen] = useState(false)
   const [isDocumentsPanelOpen, setIsDocumentsPanelOpen] = useState(false)
+  const [isHandbookPanelOpen, setIsHandbookPanelOpen] = useState(false)
   const [isRestrictedModalOpen, setIsRestrictedModalOpen] = useState(false)
 
   // Debug log
@@ -161,7 +163,8 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
           const isKudosCard = category.title === 'Kudos Calculator'
           const isDocumentsCard = category.title === 'Documents'
           const isAbsenceCard = category.title === 'Absence Requests'
-          const isRestrictedCard = isKudosCard || isDocumentsCard || isAbsenceCard
+          const isHandbookCard = category.title === 'Employee Handbook'
+          const isRestrictedCard = isKudosCard || isDocumentsCard || isAbsenceCard || isHandbookCard
 
           return (
             <motion.div
@@ -178,6 +181,7 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
                 if (isKudosCard && isVismaEmployee) setIsKudosPanelOpen(true)
                 if (isDocumentsCard && isVismaEmployee) setIsDocumentsPanelOpen(true)
                 if (isAbsenceCard && isVismaEmployee) onOpenAbsencePanel()
+                if (isHandbookCard && isVismaEmployee) setIsHandbookPanelOpen(true)
               }}
               className={`relative p-5 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 cursor-pointer group ${isRestrictedCard && !isVismaEmployee ? 'opacity-70' : ''}`}
               initial={{ opacity: 0, y: 20 }}
@@ -221,6 +225,12 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
       <DocumentsPanel
         isOpen={isDocumentsPanelOpen}
         onClose={() => setIsDocumentsPanelOpen(false)}
+      />
+
+      {/* Handbook Panel */}
+      <HandbookPanel
+        isOpen={isHandbookPanelOpen}
+        onClose={() => setIsHandbookPanelOpen(false)}
       />
 
       {/* Restricted Access Modal */}
