@@ -32,9 +32,9 @@ export default function KudosCalculatorPanel({ isOpen, onClose }: KudosCalculato
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9998]"
             style={{ pointerEvents: 'auto' }}
           />
 
@@ -47,59 +47,73 @@ export default function KudosCalculatorPanel({ isOpen, onClose }: KudosCalculato
             transition={{
               type: 'spring',
               stiffness: 300,
-              damping: 30,
-              duration: 0.3
+              damping: 35,
             }}
-            className="fixed left-0 top-0 h-full w-full md:w-[450px] bg-white shadow-2xl z-[9999] overflow-hidden flex flex-col"
+            className="fixed left-0 top-0 h-full w-full md:w-[450px] bg-[#0a0a0a] border-r border-[#88c540]/10 shadow-2xl z-[9999] overflow-hidden flex flex-col"
             style={{ pointerEvents: 'auto' }}
           >
+            {/* Background Grid Effect */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+              backgroundImage: `linear-gradient(#88c540 1px, transparent 1px), linear-gradient(90deg, #88c540 1px, transparent 1px)`,
+              backgroundSize: '40px 40px'
+            }} />
+
             {/* Header */}
-            <div className="bg-white p-5 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Kudos Calculator</h2>
+            <div className="relative bg-[#0a0a0a]/80 backdrop-blur-md p-6 border-b border-[#88c540]/10">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#88c540]/10 flex items-center justify-center">
+                    <Calculator className="w-5 h-5 text-[#88c540]" />
+                  </div>
+                  <h2 className="text-xl font-bold text-white tracking-tight">Kudos Calculator</h2>
+                </div>
                 <button
                   onClick={onClose}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="w-10 h-10 flex items-center justify-center hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white"
                 >
-                  <X className="w-5 h-5 text-gray-600" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
 
-              {/* Tabs */}
-              <SmoothTabs
-                tabs={[
-                  { id: 'cost', label: 'Item Cost', icon: <Calculator className="w-4 h-4" /> },
-                  { id: 'leaving', label: 'Leaving', icon: <LogOut className="w-4 h-4" /> },
-                  { id: 'buying-power', label: 'Buying Power', icon: <ShoppingBag className="w-4 h-4" /> },
-                ]}
-                activeTab={activeTab}
-                onChange={(tab) => setActiveTab(tab as TabType)}
-              />
+              {/* Tabs - Wrapped for dark mode */}
+              <div className="dark">
+                <SmoothTabs
+                  tabs={[
+                    { id: 'cost', label: 'Item Cost', icon: <Calculator className="w-4 h-4" /> },
+                    { id: 'leaving', label: 'Leaving', icon: <LogOut className="w-4 h-4" /> },
+                    { id: 'buying-power', label: 'Buying Power', icon: <ShoppingBag className="w-4 h-4" /> },
+                  ]}
+                  activeTab={activeTab}
+                  onChange={(tab) => setActiveTab(tab as TabType)}
+                />
+              </div>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-5">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="relative flex-1 overflow-y-auto p-6"
+            >
               <AnimatePresence mode="wait">
                 {activeTab === 'cost' && <CostCalculator key="cost" />}
                 {activeTab === 'leaving' && <LeavingCalculator key="leaving" />}
                 {activeTab === 'buying-power' && <BuyingPowerCalculator key="buying-power" />}
               </AnimatePresence>
-            </div>
+            </motion.div>
 
             {/* Footer */}
-            <div className="border-t border-gray-200 bg-white p-4">
+            <div className="relative p-6 border-t border-[#88c540]/10 bg-[#0a0a0a]/80 backdrop-blur-md">
               <a
                 href="https://docs.google.com/spreadsheets/d/1f5Pkpv4R1ez-eNQ9XqDTCZVGYm-SqT-m8CtxBBc2Zjw/edit?gid=0#gid=0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] hover:from-[#e5a800] hover:to-[#FBBB00] text-[#1a1a1a] font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02]"
+                className="group relative flex items-center justify-center gap-3 w-full px-6 py-4 bg-gradient-to-r from-[#88c540] to-[#9ed958] text-black font-bold rounded-xl transition-all duration-300 shadow-lg shadow-[#88c540]/20 hover:shadow-[#88c540]/40 hover:scale-[1.02]"
               >
-                <ExternalLink className="w-4 h-4" />
-                Open Official Kudos Calculator
+                <ExternalLink className="w-5 h-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                <span className="tracking-tight">Open Official Spreadsheet</span>
               </a>
-              <p className="text-xs text-gray-500 text-center mt-2">
-                View the full spreadsheet with all calculations
-              </p>
             </div>
           </motion.div>
         </>
@@ -137,33 +151,36 @@ function CostCalculator() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-4"
+      exit={{ opacity: 0, y: -10 }}
+      className="space-y-6"
     >
       <div>
-        <h3 className="text-lg font-bold text-gray-900 mb-1">How much will an item cost?</h3>
-        <p className="text-xs text-gray-600">Calculate Kudos needed for a specific price</p>
+        <h3 className="text-lg font-bold text-white mb-1 tracking-tight">How much will an item cost?</h3>
+        <p className="text-xs text-gray-500 font-medium">Calculate Kudos needed for a specific price</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-5">
         {/* Price Input */}
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+        <div className="relative">
+          <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
             Item Price (EUR)
           </label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="245.00"
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#FBBB00] focus:border-transparent"
-          />
+          <div className="relative group">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">€</span>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="245.00"
+              className="w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border border-[#88c540]/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#88c540]/50 transition-all group-hover:border-[#88c540]/30"
+            />
+          </div>
         </div>
 
         {/* Toggle Cards Grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           <ToggleCard
             label="VAT included?"
             checked={vatIncluded}
@@ -189,27 +206,28 @@ function CostCalculator() {
         {/* Result */}
         {result !== null && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative overflow-hidden bg-gradient-to-br from-[#FBBB00] via-[#fdd45f] to-[#FBBB00] rounded-xl p-[2px]"
+            className="relative overflow-hidden bg-[#1a1a1a] border-2 border-[#88c540]/30 rounded-2xl p-6 text-center group"
           >
-            <div className="bg-white rounded-[10px] p-5 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-[#FBBB00]/20 to-[#fdd45f]/20 mb-3">
-                <Calculator className="w-6 h-6 text-[#FBBB00]" />
+            <div className="relative z-10">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#88c540]/10 mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Calculator className="w-7 h-7 text-[#88c540]" />
               </div>
-              <p className="text-xs font-medium text-gray-600 mb-1">You need</p>
-              <p className="text-4xl font-bold bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] bg-clip-text text-transparent">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">You need approximately</p>
+              <p className="text-5xl font-black bg-gradient-to-r from-[#88c540] to-[#9ed958] bg-clip-text text-transparent">
                 {result} Kudos
               </p>
-              <div className="mt-3 flex items-center justify-center gap-2 text-xs">
-                <span className="px-2 py-1 bg-gray-100 rounded-md text-gray-700 font-medium">
-                  {isTeam ? "Team" : "Personal"}
-                </span>
-                <span className="px-2 py-1 bg-gray-100 rounded-md text-gray-700 font-medium">
-                  {withTaxes ? "With taxes" : "No taxes"}
+              <div className="mt-4 flex items-center justify-center gap-2">
+                <span className="px-3 py-1 bg-white/5 rounded-lg text-gray-400 text-[10px] font-bold uppercase tracking-wider border border-white/5">
+                  {isTeam ? "Team Purchase" : "Personal Purchase"}
                 </span>
               </div>
             </div>
+            
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#88c540]/5 blur-3xl -z-10" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#88c540]/5 blur-3xl -z-10" />
           </motion.div>
         )}
       </div>
@@ -267,20 +285,20 @@ function LeavingCalculator() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-4"
+      exit={{ opacity: 0, y: -10 }}
+      className="space-y-6"
     >
       <div>
-        <h3 className="text-lg font-bold text-gray-900 mb-1">Leaving Visma</h3>
-        <p className="text-xs text-gray-600">Calculate what you owe to keep an item</p>
+        <h3 className="text-lg font-bold text-white mb-1 tracking-tight">Leaving Visma</h3>
+        <p className="text-xs text-gray-500 font-medium">Calculate what you owe to keep an item</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-5">
         {/* Original Kudos */}
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+        <div className="relative">
+          <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
             Original Value (Kudos)
           </label>
           <input
@@ -288,12 +306,12 @@ function LeavingCalculator() {
             value={originalKudos}
             onChange={(e) => setOriginalKudos(e.target.value)}
             placeholder="54"
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#FBBB00] focus:border-transparent"
+            className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#88c540]/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#88c540]/50 transition-all"
           />
         </div>
 
         {/* Toggle Cards Grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           <ToggleCard
             label="Team purchase?"
             checked={isTeam}
@@ -309,14 +327,14 @@ function LeavingCalculator() {
         {/* Purchase Date */}
         {!isTeam && !paidTaxes && (
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">
+            <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
               Purchase Date
             </label>
             <input
               type="month"
               value={purchaseDate}
               onChange={(e) => setPurchaseDate(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#FBBB00] focus:border-transparent"
+              className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#88c540]/10 rounded-xl text-white focus:outline-none focus:border-[#88c540]/50 transition-all [color-scheme:dark]"
             />
           </div>
         )}
@@ -324,38 +342,39 @@ function LeavingCalculator() {
         {/* Result */}
         {result !== null && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className={`relative overflow-hidden rounded-xl p-[2px] ${
+            className={`relative overflow-hidden rounded-2xl p-6 text-center border-2 group ${
               result === 'Cannot take'
-                ? 'bg-gradient-to-br from-red-500 via-rose-500 to-red-500'
-                : 'bg-gradient-to-br from-[#FBBB00] via-[#fdd45f] to-[#FBBB00]'
+                ? 'bg-red-500/5 border-red-500/30'
+                : 'bg-[#1a1a1a] border-[#88c540]/30'
             }`}
           >
-            <div className="bg-white rounded-[10px] p-5 text-center">
-              {result === 'Cannot take' ? (
-                <>
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-50 mb-3">
-                    <X className="w-6 h-6 text-red-600" />
-                  </div>
-                  <p className="text-2xl font-bold text-red-600">Cannot Take Item</p>
-                  <p className="text-xs text-gray-600 mt-2">Team purchases stay with team</p>
-                </>
-              ) : (
-                <>
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-[#FBBB00]/20 to-[#fdd45f]/20 mb-3">
-                    <LogOut className="w-6 h-6 text-[#FBBB00]" />
-                  </div>
-                  <p className="text-xs font-medium text-gray-600 mb-1">You need to pay</p>
-                  <p className="text-4xl font-bold bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] bg-clip-text text-transparent">
-                    {result} EUR
-                  </p>
-                  <div className="mt-3 inline-block px-3 py-1 bg-gray-100 rounded-md text-xs text-gray-700 font-medium">
-                    {result === 0 ? 'Already yours!' : result === 1 ? 'Fully depreciated' : '36-month depreciation'}
-                  </div>
-                </>
-              )}
-            </div>
+            {result === 'Cannot take' ? (
+              <div className="relative z-10">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-red-500/10 mb-4">
+                  <X className="w-7 h-7 text-red-500" />
+                </div>
+                <p className="text-2xl font-black text-red-500">Cannot Take Item</p>
+                <p className="text-xs text-gray-500 mt-2 font-medium uppercase tracking-wider">Team purchases must remain with Visma</p>
+              </div>
+            ) : (
+              <div className="relative z-10">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#88c540]/10 mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <LogOut className="w-7 h-7 text-[#88c540]" />
+                </div>
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Buyout amount</p>
+                <p className="text-5xl font-black bg-gradient-to-r from-[#88c540] to-[#9ed958] bg-clip-text text-transparent">
+                  {result} EUR
+                </p>
+                <div className="mt-4 inline-block px-3 py-1 bg-white/5 rounded-lg text-gray-400 text-[10px] font-bold uppercase tracking-wider border border-white/5">
+                  {result === 0 ? 'Fully Paid' : result === 1 ? 'Depreciated' : '3-Year Rule'}
+                </div>
+              </div>
+            )}
+            
+            {/* Background Accent */}
+            <div className={`absolute top-0 right-0 w-32 h-32 blur-3xl -z-10 ${result === 'Cannot take' ? 'bg-red-500/5' : 'bg-[#88c540]/5'}`} />
           </motion.div>
         )}
       </div>
@@ -402,20 +421,20 @@ function BuyingPowerCalculator() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-4"
+      exit={{ opacity: 0, y: -10 }}
+      className="space-y-6"
     >
       <div>
-        <h3 className="text-lg font-bold text-gray-900 mb-1">What can my Kudos buy?</h3>
-        <p className="text-xs text-gray-600">Calculate maximum affordable price</p>
+        <h3 className="text-lg font-bold text-white mb-1 tracking-tight">What can my Kudos buy?</h3>
+        <p className="text-xs text-gray-500 font-medium">Calculate maximum affordable price</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-5">
         {/* Kudos Input */}
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+          <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
             Available Kudos
           </label>
           <input
@@ -423,12 +442,12 @@ function BuyingPowerCalculator() {
             value={kudos}
             onChange={(e) => setKudos(e.target.value)}
             placeholder="100"
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#FBBB00] focus:border-transparent"
+            className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#88c540]/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#88c540]/50 transition-all"
           />
         </div>
 
         {/* Toggle Cards Grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           <ToggleCard
             label="Team purchase?"
             checked={isTeam}
@@ -444,40 +463,43 @@ function BuyingPowerCalculator() {
         {/* Result */}
         {result !== null && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative overflow-hidden bg-gradient-to-br from-[#FBBB00] via-[#fdd45f] to-[#FBBB00] rounded-xl p-[2px]"
+            className="relative overflow-hidden bg-[#1a1a1a] border-2 border-[#88c540]/30 rounded-2xl p-6 group"
           >
-            <div className="bg-white rounded-[10px] p-5">
-              <div className="flex justify-center mb-3">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-[#FBBB00]/20 to-[#fdd45f]/20">
-                  <ShoppingBag className="w-6 h-6 text-[#FBBB00]" />
-                </div>
+            <div className="relative z-10 text-center">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#88c540]/10 mb-4 group-hover:scale-110 transition-transform duration-300">
+                <ShoppingBag className="w-7 h-7 text-[#88c540]" />
               </div>
-              <p className="text-xs font-medium text-gray-600 mb-3 text-center">You can buy items up to:</p>
-              <div className="grid grid-cols-2 gap-3 mb-3">
-                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-3 text-center border border-gray-200">
-                  <p className="text-xs text-gray-500 mb-1 font-medium">Excl. VAT</p>
-                  <p className="text-xl font-bold bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] bg-clip-text text-transparent">
-                    {result.exclVAT} EUR
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Estimated Buying Power</p>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="bg-white/5 rounded-xl p-4 border border-white/5 transition-colors group-hover:border-[#88c540]/20">
+                  <p className="text-[10px] text-gray-500 mb-1 font-black uppercase tracking-widest">Excl. VAT</p>
+                  <p className="text-2xl font-black text-white">
+                    {result.exclVAT}€
                   </p>
                 </div>
-                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-3 text-center border border-gray-200">
-                  <p className="text-xs text-gray-500 mb-1 font-medium">Incl. VAT</p>
-                  <p className="text-xl font-bold bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] bg-clip-text text-transparent">
-                    {result.inclVAT} EUR
+                <div className="bg-white/5 rounded-xl p-4 border border-white/5 transition-colors group-hover:border-[#88c540]/20">
+                  <p className="text-[10px] text-gray-500 mb-1 font-black uppercase tracking-widest">Incl. VAT</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-[#88c540] to-[#9ed958] bg-clip-text text-transparent">
+                    {result.inclVAT}€
                   </p>
                 </div>
               </div>
-              <div className="flex items-center justify-center gap-2 text-xs">
-                <span className="px-2 py-1 bg-gray-100 rounded-md text-gray-700 font-medium">
+              
+              <div className="flex items-center justify-center gap-2">
+                <span className="px-3 py-1 bg-white/5 rounded-lg text-gray-400 text-[10px] font-bold uppercase tracking-wider border border-white/5">
                   {isTeam ? "Team" : "Personal"}
                 </span>
-                <span className="px-2 py-1 bg-gray-100 rounded-md text-gray-700 font-medium">
-                  {withTaxes ? "With taxes" : "No taxes"}
+                <span className="px-3 py-1 bg-white/5 rounded-lg text-gray-400 text-[10px] font-bold uppercase tracking-wider border border-white/5">
+                  {withTaxes ? "Tax Applied" : "No Tax"}
                 </span>
               </div>
             </div>
+            
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#88c540]/5 blur-3xl -z-10" />
           </motion.div>
         )}
       </div>
@@ -498,19 +520,19 @@ function ToggleCard({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className={`p-3 rounded-xl border transition-all text-left hover:scale-[1.02] ${
+      className={`p-4 rounded-xl border transition-all text-left group/toggle ${
         checked
-          ? 'bg-[#FBBB00]/10 border-[#FBBB00] shadow-sm'
-          : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+          ? 'bg-[#88c540]/10 border-[#88c540]/50'
+          : 'bg-[#1a1a1a] border-white/5 hover:border-white/10'
       }`}
     >
-      <div className="flex items-center justify-between mb-1.5">
-        <span className={`text-xs font-medium ${checked ? 'text-[#1a1a1a]' : 'text-gray-700'}`}>
+      <div className="flex items-center justify-between mb-2">
+        <span className={`text-[10px] font-black uppercase tracking-widest ${checked ? 'text-[#88c540]' : 'text-gray-500'}`}>
           {label}
         </span>
         <div
           className={`relative w-8 h-4 rounded-full transition-colors ${
-            checked ? 'bg-[#FBBB00]' : 'bg-gray-300'
+            checked ? 'bg-[#88c540]' : 'bg-white/10'
           }`}
         >
           <div
@@ -521,8 +543,8 @@ function ToggleCard({
         </div>
       </div>
       <div>
-        <span className={`text-xs font-semibold ${checked ? 'text-[#1a1a1a]' : 'text-gray-500'}`}>
-          {checked ? 'Yes' : 'No'}
+        <span className={`text-sm font-bold ${checked ? 'text-white' : 'text-gray-600'}`}>
+          {checked ? 'Enabled' : 'Disabled'}
         </span>
       </div>
     </button>

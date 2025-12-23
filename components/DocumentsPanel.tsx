@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ExternalLink } from 'lucide-react'
+import { X, ExternalLink, FileText } from 'lucide-react'
 import Image from 'next/image'
 
 interface DocumentsPanelProps {
@@ -33,6 +33,30 @@ const documents = [
 ]
 
 export default function DocumentsPanel({ isOpen, onClose }: DocumentsPanelProps) {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+  }
+
   const handleDocumentClick = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
@@ -47,9 +71,9 @@ export default function DocumentsPanel({ isOpen, onClose }: DocumentsPanelProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9998]"
             style={{ pointerEvents: 'auto' }}
           />
 
@@ -62,83 +86,97 @@ export default function DocumentsPanel({ isOpen, onClose }: DocumentsPanelProps)
             transition={{
               type: 'spring',
               stiffness: 300,
-              damping: 30,
-              duration: 0.3
+              damping: 35,
             }}
-            className="fixed left-0 top-0 h-full w-full md:w-[480px] bg-gradient-to-b from-white to-gray-50 shadow-2xl z-[9999] overflow-hidden flex flex-col"
+            className="fixed left-0 top-0 h-full w-full md:w-[480px] bg-[#0a0a0a] border-r border-[#88c540]/10 shadow-2xl z-[9999] overflow-hidden flex flex-col"
             style={{ pointerEvents: 'auto' }}
           >
+            {/* Background Grid Effect */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+              backgroundImage: `linear-gradient(#88c540 1px, transparent 1px), linear-gradient(90deg, #88c540 1px, transparent 1px)`,
+              backgroundSize: '40px 40px'
+            }} />
+
             {/* Header */}
-            <div className="bg-white p-5 border-b border-gray-200">
+            <div className="relative p-6 border-b border-[#88c540]/10 bg-[#0a0a0a]/80 backdrop-blur-md">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Important Documents
-                </h2>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#88c540]/10 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-[#88c540]" />
+                  </div>
+                  <h2 className="text-xl font-bold text-white tracking-tight">
+                    Important Documents
+                  </h2>
+                </div>
                 <button
                   onClick={onClose}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="w-10 h-10 flex items-center justify-center hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white"
                 >
-                  <X className="w-5 h-5 text-gray-600" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="space-y-2">
-                {documents.map((doc, index) => (
-                  <motion.button
-                    key={doc.title}
-                    onClick={() => handleDocumentClick(doc.url)}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.03, duration: 0.3 }}
-                    className="w-full group relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-4 hover:border-[#FBBB00]/50 hover:shadow-lg hover:shadow-[#FBBB00]/5 transition-all duration-300 text-left"
-                  >
-                    <div className="flex items-center gap-4">
-                      {/* Icon */}
-                      <Image
-                        src="/card icons/documents-icon.png"
-                        alt="document icon"
-                        width={44}
-                        height={44}
-                        className="w-11 h-11 object-contain flex-shrink-0 group-hover:scale-110 transition-transform duration-300"
-                      />
-                      
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold text-gray-900 group-hover:text-[#1a1a1a] transition-colors">
-                          {doc.title}
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                          {doc.description}
-                        </p>
-                      </div>
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="relative flex-1 overflow-y-auto p-6 space-y-3"
+            >
+              {documents.map((doc) => (
+                <motion.button
+                  key={doc.title}
+                  variants={itemVariants}
+                  onClick={() => handleDocumentClick(doc.url)}
+                  className="w-full group relative overflow-hidden bg-[#161616] border border-[#88c540]/5 rounded-2xl p-5 hover:border-[#88c540]/30 transition-all duration-500 text-left flex flex-col justify-center min-h-[90px]"
+                >
+                  {/* Hover Glow Background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#88c540]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Border effect on hover */}
+                  <div className="absolute inset-0 border border-transparent group-hover:border-[#88c540]/20 transition-colors duration-500 rounded-2xl pointer-events-none" />
 
-                      {/* External Link Icon */}
-                      <ExternalLink className="w-4 h-4 text-gray-300 group-hover:text-[#FBBB00] transition-all duration-300 flex-shrink-0" />
-                    </div>
+                  {/* Top Right Arrow */}
+                  <div className="absolute top-5 right-5 text-white/5 group-hover:text-[#88c540] transition-all duration-300">
+                    <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
 
-                    {/* Subtle hover gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#FBBB00]/0 via-[#FBBB00]/0 to-[#FBBB00]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
-                  </motion.button>
-                ))}
-              </div>
-            </div>
+                  <div className="relative z-10 pr-8">
+                    <h3 className="text-lg font-black text-white group-hover:text-[#88c540] transition-colors mb-1 tracking-tight" style={{ fontFamily: "var(--font-helvetica-now), var(--font-outfit), sans-serif" }}>
+                      {doc.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 line-clamp-2 group-hover:text-gray-300 transition-colors font-medium leading-relaxed max-w-[90%]" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
+                      {doc.description}
+                    </p>
+                  </div>
+
+                  {/* Corner Grid Effect */}
+                  <div className="absolute bottom-0 right-0 w-20 h-20 opacity-[0.03] group-hover:opacity-10 transition-opacity duration-500 pointer-events-none">
+                    <div className="absolute inset-0" style={{
+                      backgroundImage: `linear-gradient(to right, #88c540 1px, transparent 1px), linear-gradient(to bottom, #88c540 1px, transparent 1px)`,
+                      backgroundSize: '10px 10px',
+                      maskImage: 'radial-gradient(circle at bottom right, black, transparent 70%)',
+                      WebkitMaskImage: 'radial-gradient(circle at bottom right, black, transparent 70%)'
+                    }} />
+                  </div>
+                </motion.button>
+              ))}
+            </motion.div>
 
             {/* Footer */}
-            <div className="border-t border-gray-200 bg-white p-4">
+            <div className="relative p-6 border-t border-[#88c540]/10 bg-[#0a0a0a]/80 backdrop-blur-md">
               <a
                 href="https://drive.google.com/drive/u/3/folders/129DRZY2m8DfbXPSax0dzADDSZ3Oy6kQW"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-[#FBBB00] to-[#fdd45f] hover:from-[#e5a800] hover:to-[#FBBB00] text-[#1a1a1a] font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02]"
+                className="group relative flex items-center justify-center gap-3 w-full px-6 py-4 bg-gradient-to-r from-[#88c540] to-[#9ed958] text-black font-bold rounded-xl transition-all duration-300 shadow-lg shadow-[#88c540]/20 hover:shadow-[#88c540]/40 hover:scale-[1.02]"
               >
-                <ExternalLink className="w-4 h-4" />
-                View All Documents
+                <ExternalLink className="w-5 h-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                <span className="tracking-tight">View All Documents</span>
               </a>
-              <p className="text-xs text-gray-500 text-center mt-2">
-                Browse the full list of available documents in Google Drive
+              <p className="text-xs text-gray-500 text-center mt-4 font-medium">
+                Browse the full library in Google Drive
               </p>
             </div>
           </motion.div>

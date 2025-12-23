@@ -61,7 +61,7 @@ export function Modal({ isOpen, onClose, children, className, hideCloseButton = 
               transition={{ type: 'spring', duration: 0.5, bounce: 0.3 }}
               onClick={(e) => e.stopPropagation()}
               className={cn(
-                'relative bg-white rounded-2xl shadow-2xl max-w-md w-full pointer-events-auto',
+                'relative bg-[#0a0a0a] rounded-3xl shadow-2xl max-w-md w-full pointer-events-auto border border-[#88c540]/20 overflow-hidden',
                 className
               )}
             >
@@ -69,10 +69,10 @@ export function Modal({ isOpen, onClose, children, className, hideCloseButton = 
               {!hideCloseButton && (
                 <button
                   onClick={onClose}
-                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 group"
+                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/5 transition-colors duration-200 group z-[100]"
                   aria-label="Close modal"
                 >
-                  <X className="w-5 h-5 text-gray-500 group-hover:text-gray-700" />
+                  <X className="w-5 h-5 text-gray-500 group-hover:text-white" />
                 </button>
               )}
 

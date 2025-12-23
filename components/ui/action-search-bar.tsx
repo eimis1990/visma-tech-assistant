@@ -66,11 +66,14 @@ export function ActionSearchBar({
         onClick={handleContainerClick}
         className={cn(
           "flex items-center gap-2 w-full p-3 bg-white border rounded-xl cursor-pointer transition-all duration-200",
-          isOpen ? "border-[#FBBB00] ring-2 ring-[#FBBB00]/20" : "border-gray-200 hover:border-[#FBBB00]",
+          "dark:bg-[#1a1a1a] dark:border-[#88c540]/10",
+          isOpen 
+            ? "border-[#FBBB00] ring-2 ring-[#FBBB00]/20 dark:border-[#88c540] dark:ring-[#88c540]/20" 
+            : "border-gray-200 hover:border-[#FBBB00] dark:hover:border-[#88c540]/50",
           "shadow-sm"
         )}
       >
-        <Search className="w-5 h-5 text-gray-400" />
+        <Search className="w-5 h-5 text-gray-400 dark:text-gray-500" />
         <input
           ref={inputRef}
           type="text"
@@ -84,7 +87,7 @@ export function ActionSearchBar({
             setQuery('')
           }}
           placeholder={placeholder}
-          className="flex-1 bg-transparent outline-none text-sm text-gray-900 placeholder:text-gray-500 cursor-pointer"
+          className="flex-1 bg-transparent outline-none text-sm text-gray-900 dark:text-white placeholder:text-gray-500 cursor-pointer"
           readOnly={!isOpen}
         />
         <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform duration-200", isOpen && "rotate-180")} />
@@ -97,7 +100,7 @@ export function ActionSearchBar({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-gray-100 shadow-xl z-50 overflow-hidden"
+            className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1a1a1a] rounded-xl border border-gray-100 dark:border-[#88c540]/20 shadow-xl z-50 overflow-hidden"
           >
             <div className="max-h-[240px] overflow-y-auto p-1.5 space-y-0.5">
               {filteredItems.length > 0 ? (
@@ -112,8 +115,8 @@ export function ActionSearchBar({
                     className={cn(
                       "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors",
                       selected === item.value 
-                        ? "bg-[#FBBB00]/10 text-[#1a1a1a] font-medium" 
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        ? "bg-[#FBBB00]/10 text-[#1a1a1a] dark:bg-[#88c540]/20 dark:text-white font-medium" 
+                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
                     )}
                   >
                     <span className="flex items-center gap-2">
@@ -121,7 +124,7 @@ export function ActionSearchBar({
                       {item.label}
                     </span>
                     {selected === item.value && (
-                      <Check className="w-4 h-4 text-[#FBBB00]" />
+                      <Check className="w-4 h-4 text-[#FBBB00] dark:text-[#88c540]" />
                     )}
                   </button>
                 ))

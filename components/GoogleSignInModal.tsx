@@ -63,10 +63,16 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="bg-white shadow-none border border-gray-100" hideCloseButton={hideCloseButton}>
-      <div className="p-8">
+    <Modal isOpen={isOpen} onClose={onClose} hideCloseButton={hideCloseButton}>
+      <div className="p-8 relative">
+        {/* Background Grid Effect */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+          backgroundImage: `linear-gradient(#88c540 1px, transparent 1px), linear-gradient(90deg, #88c540 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }} />
+
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 relative z-10">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -74,11 +80,11 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
             className="flex items-center justify-center mx-auto mb-6"
           >
             <Image
-              src="/vtech-logo.png"
+              src="/vitech-landing-logo-white.svg"
               alt="ViTech Logo"
               width={180}
               height={48}
-              className="h-12 w-auto"
+              className="h-12 w-auto opacity-90"
               priority
             />
           </motion.div>
@@ -87,7 +93,7 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-2xl font-bold text-gray-900 mb-2"
+            className="text-2xl font-bold text-white mb-2 tracking-tight"
             style={{ fontFamily: "var(--font-helvetica-now), var(--font-outfit), 'Helvetica Neue', sans-serif" }}
           >
             Sign In to ViTech
@@ -97,7 +103,7 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-gray-600 max-w-xs mx-auto"
+            className="text-gray-400 max-w-xs mx-auto font-medium"
             style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
           >
             Please sign in with your Visma email to use this tool.
@@ -108,44 +114,45 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
+          className="relative z-10"
         >
           {/* Email Form */}
           <form onSubmit={handleEmailAuth} className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-3">
               {isSignUp && (
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <div className="relative group">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5 group-focus-within:text-[#88c540] transition-colors" />
                   <input
                     type="text"
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border border-[#88c540]/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#88c540]/50 transition-all duration-200"
                     style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
                     required={isSignUp}
                   />
                 </div>
               )}
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <div className="relative group">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5 group-focus-within:text-[#88c540] transition-colors" />
                 <input
                   type="email"
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all duration-200"
+                  className="w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border border-[#88c540]/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#88c540]/50 transition-all duration-200"
                   style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
                   required
                 />
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <div className="relative group">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5 group-focus-within:text-[#88c540] transition-colors" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all duration-200"
+                  className="w-full pl-10 pr-12 py-3 bg-[#1a1a1a] border border-[#88c540]/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#88c540]/50 transition-all duration-200"
                   style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
                   required
                   minLength={6}
@@ -153,7 +160,7 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -163,7 +170,7 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
             <button
               type="submit"
               disabled={isEmailLoading || isGoogleLoading}
-              className="w-full flex items-center justify-center gap-2 bg-[#FBBB00] hover:bg-[#e5aa00] text-black font-semibold py-3 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#88c540] to-[#9ed958] hover:shadow-lg hover:shadow-[#88c540]/20 text-black font-black py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider text-sm"
               style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
             >
               {isEmailLoading ? (
@@ -177,11 +184,11 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
             </button>
           </form>
 
-          <div className="mt-4 text-center">
+          <div className="mt-6 text-center">
             <button
               type="button"
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-sm text-gray-500 hover:text-[#88c540] transition-colors font-medium"
               style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
             >
               {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
@@ -189,12 +196,12 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
           </div>
 
           {/* Separator */}
-          <div className="relative my-6">
+          <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
+              <div className="w-full border-t border-white/5"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with Google</span>
+            <div className="relative flex justify-center text-xs">
+              <span className="px-3 bg-[#0a0a0a] text-gray-600 font-bold uppercase tracking-widest">Or continue with Google</span>
             </div>
           </div>
 
@@ -202,11 +209,11 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
           <button
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading || isEmailLoading}
-            className="w-full flex items-center justify-center gap-3 bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group"
+            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-black font-black py-4 px-6 rounded-xl transition-all duration-300 shadow-xl hover:shadow-white/5 disabled:opacity-50 disabled:cursor-not-allowed group uppercase tracking-wider text-sm"
             style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
           >
             {isGoogleLoading ? (
-              <div className="w-5 h-5 border-2 border-gray-600 border-t-white rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
             ) : (
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -230,8 +237,8 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
             <span>{isGoogleLoading ? 'Signing in...' : 'Continue with Google'}</span>
           </button>
 
-          <p className="text-center text-xs text-gray-500 mt-3 max-w-xs mx-auto leading-relaxed">
-            Sign in with Google using your Visma email to send absence requests directly from here.
+          <p className="text-center text-[10px] text-gray-600 mt-4 max-w-[280px] mx-auto leading-relaxed font-bold uppercase tracking-wider">
+            Use your Visma email to enable direct absence requests and secure access.
           </p>
         </motion.div>
 
@@ -240,7 +247,7 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"
+            className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm font-medium text-center"
           >
             {error}
           </motion.div>
@@ -251,10 +258,10 @@ export function GoogleSignInModal({ isOpen, onClose, hideCloseButton = false }: 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-center text-xs text-gray-500 mt-6"
+          className="text-center text-[10px] text-gray-700 mt-8 uppercase tracking-widest font-black"
           style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
         >
-          By continuing, you agree to our Terms of Service and Privacy Policy
+          Secured by Visma Identity
         </motion.p>
       </div>
     </Modal>

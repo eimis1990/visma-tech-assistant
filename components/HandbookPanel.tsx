@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Building2, Users, MessageSquare, Globe, Heart, Shield, MapPin, Home, Car, Flame, Wifi, Calendar, Clock, HeartPulse, Coins, Wrench, Gift, ChevronRight } from 'lucide-react'
+import { X, ChevronRight, BookOpen, MessageSquare } from 'lucide-react'
 
 interface HandbookPanelProps {
   isOpen: boolean
@@ -10,122 +10,108 @@ interface HandbookPanelProps {
 
 const handbookTopics = [
   {
-    icon: Building2,
     title: 'Visma Group',
     description: 'Learn about Visma\'s global presence and values',
-    gradient: 'from-blue-500 to-indigo-500',
   },
   {
-    icon: Building2,
     title: 'Visma Tech Lithuania',
     description: 'Our local office, mission and team culture',
-    gradient: 'from-violet-500 to-purple-500',
   },
   {
-    icon: Users,
     title: 'Visma Tech Structure & Main Contacts',
     description: 'Organizational structure and key people',
-    gradient: 'from-pink-500 to-rose-500',
   },
   {
-    icon: Globe,
     title: 'Language of Communication',
     description: 'Guidelines for internal & external communication',
-    gradient: 'from-cyan-500 to-teal-500',
   },
   {
-    icon: MessageSquare,
     title: 'Intranet & Communication Tools',
     description: 'Slack, email, and collaboration platforms',
-    gradient: 'from-emerald-500 to-green-500',
   },
   {
-    icon: Heart,
     title: 'Workplace Conduct & Feedback',
     description: 'Expectations and feedback culture',
-    gradient: 'from-amber-500 to-orange-500',
   },
   {
-    icon: Shield,
     title: 'Security Awareness & Policies',
     description: 'Data protection and security guidelines',
-    gradient: 'from-red-500 to-rose-500',
   },
   {
-    icon: Shield,
     title: 'Office Security and Rules',
     description: 'Access control and office regulations',
-    gradient: 'from-slate-500 to-zinc-500',
   },
   {
-    icon: MapPin,
     title: 'Office Map and Seating',
     description: 'Navigate our office spaces',
-    gradient: 'from-indigo-500 to-blue-500',
   },
   {
-    icon: Home,
     title: 'Remote Work',
     description: 'Work from home policies and best practices',
-    gradient: 'from-teal-500 to-cyan-500',
   },
   {
-    icon: Car,
     title: 'Parking',
     description: 'Parking options and availability',
-    gradient: 'from-gray-500 to-slate-500',
   },
   {
-    icon: Flame,
     title: 'Work and Fire Safety',
     description: 'Emergency procedures and safety protocols',
-    gradient: 'from-orange-500 to-red-500',
   },
   {
-    icon: Wifi,
     title: 'Hardware and Network Access',
     description: 'IT equipment and connectivity setup',
-    gradient: 'from-purple-500 to-violet-500',
   },
   {
-    icon: Calendar,
     title: 'Vacation / Time Off',
     description: 'Leave policies and how to request time off',
-    gradient: 'from-green-500 to-emerald-500',
   },
   {
-    icon: Clock,
     title: 'Working Hours and Time Reporting',
     description: 'Schedules, flextime, and logging hours',
-    gradient: 'from-blue-500 to-cyan-500',
   },
   {
-    icon: HeartPulse,
     title: 'Well-being and Health Insurance',
     description: 'Health benefits and wellness programs',
-    gradient: 'from-rose-500 to-pink-500',
   },
   {
-    icon: Coins,
     title: 'Salary, Mobility & Referral Programme',
     description: 'Compensation, internal mobility, and referrals',
-    gradient: 'from-yellow-500 to-amber-500',
   },
   {
-    icon: Wrench,
     title: 'Practical Stuff',
     description: 'Day-to-day tips and useful information',
-    gradient: 'from-zinc-500 to-gray-500',
   },
   {
-    icon: Gift,
     title: 'Benefits Overview',
     description: 'Complete list of employee perks and benefits',
-    gradient: 'from-fuchsia-500 to-pink-500',
   },
 ]
 
 export default function HandbookPanel({ isOpen, onClose }: HandbookPanelProps) {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: 0.2,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -136,9 +122,9 @@ export default function HandbookPanel({ isOpen, onClose }: HandbookPanelProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9998]"
             style={{ pointerEvents: 'auto' }}
           />
 
@@ -151,76 +137,93 @@ export default function HandbookPanel({ isOpen, onClose }: HandbookPanelProps) {
             transition={{
               type: 'spring',
               stiffness: 300,
-              damping: 30,
-              duration: 0.3
+              damping: 35,
             }}
-            className="fixed left-0 top-0 h-full w-full md:w-[480px] bg-gradient-to-b from-white to-gray-50 shadow-2xl z-[9999] overflow-hidden flex flex-col"
+            className="fixed left-0 top-0 h-full w-full md:w-[480px] bg-[#0a0a0a] border-r border-[#88c540]/10 shadow-2xl z-[9999] overflow-hidden flex flex-col"
             style={{ pointerEvents: 'auto' }}
           >
+            {/* Background Grid Effect */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+              backgroundImage: `linear-gradient(#88c540 1px, transparent 1px), linear-gradient(90deg, #88c540 1px, transparent 1px)`,
+              backgroundSize: '40px 40px'
+            }} />
+
             {/* Header */}
-            <div className="bg-white p-5 border-b border-gray-200">
+            <div className="relative p-6 border-b border-[#88c540]/10 bg-[#0a0a0a]/80 backdrop-blur-md">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Employee Handbook
-                </h2>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#88c540]/10 flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-[#88c540]" />
+                  </div>
+                  <h2 className="text-xl font-bold text-white tracking-tight">
+                    Employee Handbook
+                  </h2>
+                </div>
                 <button
                   onClick={onClose}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="w-10 h-10 flex items-center justify-center hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white"
                 >
-                  <X className="w-5 h-5 text-gray-600" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="space-y-2">
-                {handbookTopics.map((topic, index) => {
-                  const Icon = topic.icon
-                  return (
-                    <motion.div
-                      key={topic.title}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.03, duration: 0.3 }}
-                      className="group relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-4 hover:border-[#FBBB00]/50 hover:shadow-lg hover:shadow-[#FBBB00]/5 transition-all duration-300 cursor-default"
-                    >
-                      <div className="flex items-center gap-4">
-                        {/* Icon */}
-                        <div className={`relative flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br ${topic.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300`}>
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-semibold text-gray-900 group-hover:text-[#1a1a1a] transition-colors">
-                            {topic.title}
-                          </h3>
-                          <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                            {topic.description}
-                          </p>
-                        </div>
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="relative flex-1 overflow-y-auto p-6 space-y-3"
+            >
+              {handbookTopics.map((topic) => {
+                return (
+                  <motion.div
+                    key={topic.title}
+                    variants={itemVariants}
+                    className="group relative overflow-hidden bg-[#161616] border border-[#88c540]/5 rounded-2xl p-5 hover:border-[#88c540]/30 transition-all duration-500 text-left flex flex-col justify-center min-h-[85px] cursor-default"
+                  >
+                    {/* Hover Glow Background */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#88c540]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Border effect on hover */}
+                    <div className="absolute inset-0 border border-transparent group-hover:border-[#88c540]/20 transition-colors duration-500 rounded-2xl pointer-events-none" />
 
-                        {/* Arrow */}
-                        <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#FBBB00] group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
-                      </div>
+                    {/* Right Arrow */}
+                    <div className="absolute top-1/2 -translate-y-1/2 right-5 text-white/5 group-hover:text-[#88c540] transition-all duration-300">
+                      <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </div>
 
-                      {/* Subtle hover gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#FBBB00]/0 via-[#FBBB00]/0 to-[#FBBB00]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
-                    </motion.div>
-                  )
-                })}
-              </div>
-            </div>
+                    <div className="relative z-10 pr-8">
+                      <h3 className="text-lg font-black text-white group-hover:text-[#88c540] transition-colors mb-0.5 tracking-tight" style={{ fontFamily: "var(--font-helvetica-now), var(--font-outfit), sans-serif" }}>
+                        {topic.title}
+                      </h3>
+                      <p className="text-xs text-gray-500 line-clamp-1 group-hover:text-gray-300 transition-colors font-medium leading-relaxed max-w-[90%]" style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
+                        {topic.description}
+                      </p>
+                    </div>
+
+                    {/* Corner Grid Effect */}
+                    <div className="absolute bottom-0 right-0 w-20 h-20 opacity-[0.03] group-hover:opacity-10 transition-opacity duration-500 pointer-events-none">
+                      <div className="absolute inset-0" style={{
+                        backgroundImage: `linear-gradient(to right, #88c540 1px, transparent 1px), linear-gradient(to bottom, #88c540 1px, transparent 1px)`,
+                        backgroundSize: '10px 10px',
+                        maskImage: 'radial-gradient(circle at bottom right, black, transparent 70%)',
+                        WebkitMaskImage: 'radial-gradient(circle at bottom right, black, transparent 70%)'
+                      }} />
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </motion.div>
 
             {/* Footer */}
-            <div className="border-t border-gray-200 bg-white p-4">
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#FBBB00]/10 flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="w-4 h-4 text-[#FBBB00]" />
+            <div className="relative p-6 border-t border-[#88c540]/10 bg-[#0a0a0a]/80 backdrop-blur-md">
+              <div className="bg-[#88c540]/5 border border-[#88c540]/20 rounded-xl p-4 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-[#88c540]/10 flex items-center justify-center flex-shrink-0">
+                  <MessageSquare className="w-5 h-5 text-[#88c540]" />
                 </div>
-                <p className="text-xs text-gray-600">
-                  <span className="font-medium text-gray-900">Tip:</span> Click the AI assistant button and ask about any of these topics for detailed information!
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  <span className="font-bold text-[#88c540]">PRO TIP:</span> Ask our AI assistant about any of these topics for instant, detailed answers!
                 </p>
               </div>
             </div>

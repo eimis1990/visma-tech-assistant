@@ -49,7 +49,7 @@ export function UserMenu({ user }: UserMenuProps) {
       {/* Profile Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-gray-100 transition-all duration-200"
+        className="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-white/5 transition-all duration-200 border border-transparent hover:border-[#88c540]/20 group"
       >
         {/* Avatar */}
         <div className="relative">
@@ -60,7 +60,7 @@ export function UserMenu({ user }: UserMenuProps) {
               alt={userName || 'User'}
               width={40}
               height={40}
-              className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
+              className="w-10 h-10 rounded-full border-2 border-[#88c540]/20 group-hover:border-[#88c540]/50 object-cover transition-colors"
               onError={(e) => {
                 console.error('Error loading avatar:', userAvatar, e)
                 setImageError(true)
@@ -68,19 +68,19 @@ export function UserMenu({ user }: UserMenuProps) {
               unoptimized={userAvatar.startsWith('http')}
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-              <User className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-full bg-[#1a1a1a] border border-[#88c540]/10 flex items-center justify-center">
+              <User className="w-6 h-6 text-gray-400" />
             </div>
           )}
           {/* Online indicator */}
-          <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+          <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#88c540] rounded-full border-2 border-[#0a0a0a]" />
         </div>
 
         {/* Dropdown Arrow */}
         <motion.svg
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          className="w-4 h-4 text-gray-500"
+          className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -97,25 +97,36 @@ export function UserMenu({ user }: UserMenuProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50"
+            className="absolute right-0 mt-2 w-72 bg-[#0a0a0a] rounded-2xl shadow-2xl border border-[#88c540]/20 overflow-hidden z-50"
           >
             {/* User Info Header */}
-            <div className="px-4 py-3 bg-black border-b border-gray-800">
-              <p className="text-sm font-semibold text-white truncate">{userName}</p>
-              <p className="text-xs text-gray-300 truncate">{userEmail}</p>
+            <div className="px-6 py-5 bg-black/40 border-b border-[#88c540]/10 relative overflow-hidden">
+              {/* Subtle background glow */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#88c540]/5 blur-3xl -z-10" />
+              
+              <p className="text-base font-bold text-white truncate tracking-tight mb-0.5">{userName}</p>
+              <p className="text-xs text-gray-500 truncate font-medium">{userEmail}</p>
             </div>
 
             {/* Menu Items */}
-            <div className="py-2">
+            <div className="py-2 relative z-10 bg-[#0a0a0a]">
               {/* Sign Out */}
               <button
                 onClick={handleSignOut}
-                className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"
+                className="w-full px-6 py-4 text-left text-sm text-gray-400 hover:text-red-500 hover:bg-red-500/5 transition-all flex items-center gap-3 group/item"
               >
-                <LogOut className="w-4 h-4" />
-                <span>Sign Out</span>
+                <div className="w-8 h-8 rounded-lg bg-red-500/5 flex items-center justify-center group-hover/item:bg-red-500/10 transition-colors">
+                  <LogOut className="w-4 h-4 transition-transform group-hover/item:-translate-x-0.5" />
+                </div>
+                <span className="font-bold uppercase tracking-widest text-xs">Sign Out</span>
               </button>
             </div>
+
+            {/* Background Grid Effect */}
+            <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{
+              backgroundImage: `linear-gradient(#88c540 1px, transparent 1px), linear-gradient(90deg, #88c540 1px, transparent 1px)`,
+              backgroundSize: '30px 30px'
+            }} />
           </motion.div>
         )}
       </AnimatePresence>

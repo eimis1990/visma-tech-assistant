@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { UserMenu } from '@/components/UserMenu'
 import { LogIn } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
+import gsap from 'gsap'
 
 interface LandingHeaderProps {
   user: User | null
@@ -17,7 +18,7 @@ const ViTechLogo = ({ className }: { className?: string }) => {
   return (
     <div className={cn('flex items-center', className)}>
       <Image
-        src="/vitech-landing-logo.png"
+        src="/vitech-landing-logo-white.svg"
         alt="Vitech - Your Personal AI Assistant"
         width={200}
         height={56}
@@ -30,6 +31,9 @@ const ViTechLogo = ({ className }: { className?: string }) => {
 
 export default function LandingHeader({ user, loading, onSignInClick }: LandingHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const logoRef = useRef<HTMLDivElement>(null)
+  const authRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,22 +43,46 @@ export default function LandingHeader({ user, loading, onSignInClick }: LandingH
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // GSAP entrance animation
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      
+      tl.from(logoRef.current, {
+        x: -50,
+        opacity: 0,
+        duration: 1,
+        delay: 0.2,
+      })
+      .from(authRef.current, {
+        x: 50,
+        opacity: 0,
+        duration: 1,
+      }, '-=0.8')
+    })
+
+    return () => ctx.revert()
+  }, [loading, user])
+
   return (
     <header 
+      ref={headerRef}
       className={cn(
         "fixed z-50 w-full transition-all duration-300",
         isScrolled 
-          ? "bg-white/90 backdrop-blur-md shadow-sm py-4 md:bg-transparent md:shadow-none md:py-6 md:backdrop-blur-none" 
+          ? "bg-[#0a0a0a]/90 backdrop-blur-md border-b border-[#88c540]/10 py-4 md:bg-transparent md:border-none md:py-6 md:backdrop-blur-none" 
           : "pt-4 md:pt-6 bg-transparent"
       )}
       style={{ zIndex: 60 }}
     >
       <div className="flex items-center justify-between w-full px-6 md:px-[50px]">
         {/* Logo - Left Side */}
-        <ViTechLogo />
+        <div ref={logoRef}>
+          <ViTechLogo />
+        </div>
 
         {/* Auth Section - Right Side */}
-        <div>
+        <div ref={authRef}>
           {loading ? (
             // Loading skeleton
             <div className="flex items-center gap-3">
@@ -71,7 +99,7 @@ export default function LandingHeader({ user, loading, onSignInClick }: LandingH
             // Show sign-in button when not signed in
             <button
               onClick={onSignInClick}
-              className="flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-gray-800 transition-all duration-200 text-sm font-medium text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#88c540] hover:bg-[#7ab636] transition-all duration-200 text-sm font-medium text-black rounded-full shadow-lg shadow-[#88c540]/20 hover:shadow-xl hover:shadow-[#88c540]/30 hover:scale-105"
             >
               <LogIn className="w-4 h-4" />
               Sign In

@@ -17,7 +17,7 @@ interface SmoothTabsProps {
 
 export function SmoothTabs({ tabs, activeTab, onChange }: SmoothTabsProps) {
   return (
-    <div className="relative flex gap-1 bg-gray-50 p-1 rounded-xl">
+    <div className="relative flex gap-1 bg-gray-50 dark:bg-[#1a1a1a] p-1 rounded-xl border border-transparent dark:border-[#88c540]/10">
       {tabs.map((tab, index) => {
         const isActive = activeTab === tab.id
         // Adjust flex basis for specific tabs
@@ -33,8 +33,8 @@ export function SmoothTabs({ tabs, activeTab, onChange }: SmoothTabsProps) {
             onClick={() => onChange(tab.id)}
             className={`relative ${flexClass} py-2.5 text-sm font-medium rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 ${
               isActive
-                ? 'text-[#1a1a1a] bg-white shadow-sm'
-                : 'text-[#1a1a1a]/70 hover:text-[#1a1a1a]'
+                ? 'text-[#1a1a1a] dark:text-black bg-white dark:bg-[#88c540] shadow-sm'
+                : 'text-[#1a1a1a]/70 dark:text-gray-400 hover:text-[#1a1a1a] dark:hover:text-white'
             }`}
           >
             {tab.icon}

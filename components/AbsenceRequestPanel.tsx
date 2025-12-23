@@ -26,9 +26,9 @@ interface AbsenceRequest {
 }
 
 const ABSENCE_ITEMS = [
-  { label: 'Vacation', value: 'Vacation', icon: <Briefcase className="w-4 h-4 text-[#FBBB00]" /> },
-  { label: 'Parental Leave', value: 'Parental Leave', icon: <Baby className="w-4 h-4 text-[#FBBB00]" /> },
-  { label: 'Unpaid Leave', value: 'Unpaid Leave', icon: <AlertCircle className="w-4 h-4 text-[#FBBB00]" /> },
+  { label: 'Vacation', value: 'Vacation', icon: <Briefcase className="w-4 h-4 text-[#88c540]" /> },
+  { label: 'Parental Leave', value: 'Parental Leave', icon: <Baby className="w-4 h-4 text-[#88c540]" /> },
+  { label: 'Unpaid Leave', value: 'Unpaid Leave', icon: <AlertCircle className="w-4 h-4 text-[#88c540]" /> },
 ]
 
 const STORAGE_KEY = 'absence_request_draft'
@@ -413,7 +413,9 @@ export default function AbsenceRequestPanel({ isOpen, onClose, prefilledRequest 
   }
 
   const isDateStart = (date: Date) => selection.start?.getTime() === date.getTime()
-  const isDateEnd = (date: Date) => (selection.end || selection.start)?.getTime() === date.getTime()
+  const isDateEnd = (date: Date) => {
+    return (selection.end || selection.start)?.getTime() === date.getTime()
+  }
 
   return (
     <>
@@ -446,7 +448,7 @@ export default function AbsenceRequestPanel({ isOpen, onClose, prefilledRequest 
               style={{ pointerEvents: 'auto' }}
             />
 
-            {/* Side Panel - Lower z-index than ElevenLabs widget (which is z-[999999]) */}
+            {/* Side Panel */}
             <motion.div
               key="absence-panel"
               initial={{ x: '-100%' }}
@@ -455,184 +457,226 @@ export default function AbsenceRequestPanel({ isOpen, onClose, prefilledRequest 
               transition={{
                 type: 'spring',
                 stiffness: 300,
-                damping: 30,
-                duration: 0.3
+                damping: 35,
               }}
-              className="fixed left-0 top-0 h-full w-full md:w-[450px] bg-white shadow-2xl z-[9999] overflow-hidden flex flex-col"
+              className="fixed left-0 top-0 h-full w-full md:w-[450px] bg-[#0a0a0a] border-r border-[#88c540]/10 shadow-2xl z-[9999] overflow-hidden flex flex-col"
               style={{ pointerEvents: 'auto' }}
             >
+              {/* Background Grid Effect */}
+              <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+                backgroundImage: `linear-gradient(#88c540 1px, transparent 1px), linear-gradient(90deg, #88c540 1px, transparent 1px)`,
+                backgroundSize: '40px 40px'
+              }} />
+
               {/* Header */}
-              <div className="bg-white p-5 border-b border-gray-200 flex-shrink-0">
+              <div className="relative bg-[#0a0a0a]/80 backdrop-blur-md p-6 border-b border-[#88c540]/10 flex-shrink-0">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-gray-900">Absence Request</h2>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#88c540]/10 flex items-center justify-center">
+                      <CalendarIcon className="w-5 h-5 text-[#88c540]" />
+                    </div>
+                    <h2 className="text-xl font-bold text-white tracking-tight">Absence Request</h2>
+                  </div>
                   <button
                     onClick={onClose}
-                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="w-10 h-10 flex items-center justify-center hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white"
                   >
-                    <X className="w-5 h-5 text-gray-600" />
+                    <X className="w-6 h-6" />
                   </button>
                 </div>
               </div>
 
-              {/* Fixed Content Area (Subject + Calendar + Add Button) */}
-              <div className="bg-white p-4 border-b border-gray-200 flex-shrink-0 space-y-4 z-10 relative shadow-[0_4px_12px_-4px_rgba(0,0,0,0.05)]">
-                 {/* Subject Selection */}
-                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
-                    Subject
-                  </label>
-                  <ActionSearchBar 
-                    items={ABSENCE_ITEMS}
-                    selected={selectedType}
-                    onSelect={setSelectedType}
-                    placeholder="Select absence type..."
-                  />
-                </div>
-
-                {/* Calendar */}
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                  <div className="p-2 flex items-center justify-between border-b border-gray-100">
-                    <button onClick={() => changeMonth(-1)} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-                      <ChevronLeft className="w-4 h-4 text-gray-600" />
-                    </button>
-                    <h3 className="text-sm font-semibold text-gray-900">
-                      {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                    </h3>
-                    <button onClick={() => changeMonth(1)} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-                      <ChevronRight className="w-4 h-4 text-gray-600" />
-                    </button>
+              {/* Scrollable Content Area */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar">
+                {/* Selection Area (Subject + Calendar + Add Button) */}
+                <div className="relative bg-[#0a0a0a]/40 p-6 space-y-6 z-10">
+                   {/* Subject Selection */}
+                   <div className="dark">
+                    <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
+                      Absence Type
+                    </label>
+                    <ActionSearchBar 
+                      items={ABSENCE_ITEMS}
+                      selected={selectedType}
+                      onSelect={setSelectedType}
+                      placeholder="Select type..."
+                    />
                   </div>
-                  
-                  <div className="p-2">
-                    <div className="grid grid-cols-7 mb-1 text-center">
-                      {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(day => (
-                        <div key={day} className="text-[10px] font-medium text-gray-400 py-1">
-                          {day}
-                        </div>
-                      ))}
+
+                  {/* Calendar */}
+                  <div className="bg-[#1a1a1a] rounded-2xl border border-[#88c540]/10 overflow-hidden shadow-inner">
+                    <div className="p-3 flex items-center justify-between border-b border-[#88c540]/5 bg-[#1a1a1a]">
+                      <button onClick={() => changeMonth(-1)} className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-gray-400 hover:text-[#88c540]">
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <h3 className="text-sm font-bold text-white tracking-wide uppercase">
+                        {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      </h3>
+                      <button onClick={() => changeMonth(1)} className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-gray-400 hover:text-[#88c540]">
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
                     </div>
                     
-                    <div className="grid grid-cols-7 gap-0.5">
-                      {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-                        <div key={`empty-${i}`} />
-                      ))}
-                      
-                      {Array.from({ length: daysInMonth }).map((_, i) => {
-                        const day = i + 1
-                        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
-                        const isSelected = isDateSelected(date)
-                        const isReserved = isDateReserved(date)
-                        const isStart = isDateStart(date)
-                        const isEnd = isDateEnd(date)
-                        const inRange = isDateInRange(date)
-                        const isToday = new Date().toDateString() === date.toDateString()
-
-                        return (
-                          <button
-                            key={day}
-                            onClick={() => handleDateClick(date)}
-                            disabled={isReserved}
-                            className={cn(
-                              "relative h-8 w-full rounded-lg flex items-center justify-center text-xs transition-all",
-                              // Reserved dates
-                              isReserved && "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50 font-medium",
-                              
-                              // Selected range
-                              !isReserved && isSelected && !inRange && "bg-[#FBBB00] text-white font-semibold shadow-sm z-10",
-                              !isReserved && inRange && "bg-[#FBBB00]/20 text-gray-900 rounded-none",
-                              !isReserved && isStart && selection.end && "rounded-r-none",
-                              !isReserved && isEnd && selection.end && "rounded-l-none",
-                              
-                              // Today
-                              isToday && !isSelected && !inRange && !isReserved && "font-bold text-[#FBBB00]",
-                              
-                              // Hover
-                              !isSelected && !inRange && !isReserved && "hover:bg-gray-50 hover:text-gray-900 text-gray-700"
-                            )}
-                          >
+                    <div className="p-4">
+                      <div className="grid grid-cols-7 mb-2 text-center">
+                        {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(day => (
+                          <div key={day} className="text-[10px] font-black text-gray-600 py-1 uppercase">
                             {day}
-                            {isReserved && <span className="absolute w-0.5 h-0.5 bg-gray-400 rounded-full bottom-1"></span>}
-                          </button>
-                        )
-                      })}
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="grid grid-cols-7 gap-1">
+                        {Array.from({ length: firstDayOfMonth }).map((_, i) => (
+                          <div key={`empty-${i}`} />
+                        ))}
+                        
+                        {Array.from({ length: daysInMonth }).map((_, i) => {
+                          const day = i + 1
+                          const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+                          const isSelected = isDateSelected(date)
+                          const isReserved = isDateReserved(date)
+                          const isStart = isDateStart(date)
+                          const isEnd = isDateEnd(date)
+                          const inRange = isDateInRange(date)
+                          const isToday = new Date().toDateString() === date.toDateString()
+
+                          return (
+                            <button
+                              key={day}
+                              onClick={() => handleDateClick(date)}
+                              disabled={isReserved}
+                              className={cn(
+                                "relative h-9 w-full rounded-xl flex items-center justify-center text-xs transition-all duration-200",
+                                // Reserved dates
+                                isReserved && "bg-white/5 text-gray-600 cursor-not-allowed opacity-30",
+                                
+                                // Selected range
+                                !isReserved && isSelected && !inRange && "bg-[#88c540] text-black font-black shadow-lg shadow-[#88c540]/20 z-10",
+                                !isReserved && inRange && "bg-[#88c540]/20 text-[#88c540] rounded-none font-bold",
+                                !isReserved && isStart && selection.end && "rounded-r-none",
+                                !isReserved && isEnd && selection.end && "rounded-l-none",
+                                
+                                // Today
+                                isToday && !isSelected && !inRange && !isReserved && "text-[#88c540] font-black ring-1 ring-inset ring-[#88c540]/30",
+                                
+                                // Hover
+                                !isSelected && !inRange && !isReserved && "hover:bg-white/5 text-gray-400 hover:text-white"
+                              )}
+                            >
+                              {day}
+                              {isReserved && <span className="absolute w-1 h-1 bg-gray-600 rounded-full bottom-1.5"></span>}
+                            </button>
+                          )
+                        })}
+                      </div>
                     </div>
                   </div>
+
+                  {/* Add Date Button */}
+                  <button
+                    onClick={addRequest}
+                    disabled={!selection.start || !selectedType}
+                    className="w-full py-4 bg-[#88c540]/10 border border-[#88c540]/20 hover:bg-[#88c540]/20 disabled:opacity-30 disabled:cursor-not-allowed text-[#88c540] font-bold rounded-2xl transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
+                  >
+                    <Plus className="w-5 h-5" />
+                    Add to Request
+                  </button>
                 </div>
 
-                {/* Add Date Button */}
-                <button
-                  onClick={addRequest}
-                  disabled={!selection.start || !selectedType}
-                  className="w-full py-2.5 bg-[#FBBB00] hover:bg-[#e6ac00] disabled:opacity-50 disabled:cursor-not-allowed text-[#1a1a1a] font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm text-sm"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Date
-                </button>
-              </div>
-
-              {/* Scrollable Selected Requests List */}
-              <div className="flex-1 overflow-y-auto bg-gray-50/50 p-5">
-                 {requests.length > 0 ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <label className="block text-xs font-medium text-gray-700">
-                        Selected dates ({requests.length})
-                      </label>
-                    </div>
-                    <div className="space-y-2">
-                      <AnimatePresence mode="popLayout">
-                      {requests.map((request) => (
-                        <motion.div
-                          key={request.id}
-                          layout
-                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, height: 0, scale: 0.95 }}
-                          className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow group"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-[#FBBB00]/10 rounded-lg text-[#FBBB00]">
-                               {ABSENCE_ITEMS.find(i => i.value === request.type)?.icon || <Briefcase className="w-4 h-4" />}
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-500 font-medium mb-0.5">{request.type}</p>
-                              <p className="text-sm font-bold text-gray-900">
-                                {formatRange(request.startDate, request.endDate)}
-                              </p>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => removeRequest(request.id)}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                {/* Selected Requests List */}
+                <div className="p-6 pt-0 border-t border-[#88c540]/10 bg-[#0a0a0a]">
+                   {requests.length > 0 ? (
+                    <div className="pt-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">
+                          Selected Periods ({requests.length})
+                        </label>
+                      </div>
+                      <motion.div 
+                        className="space-y-3"
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                          visible: {
+                            transition: {
+                              staggerChildren: 0.05
+                            }
+                          }
+                        }}
+                      >
+                        <AnimatePresence mode="popLayout">
+                        {requests.map((request) => (
+                          <motion.div
+                            key={request.id}
+                            layout
+                            variants={{
+                              hidden: { opacity: 0, x: -20, scale: 0.95 },
+                              visible: { opacity: 1, x: 0, scale: 1 }
+                            }}
+                            initial="hidden"
+                            animate="visible"
+                            exit={{ opacity: 0, x: 20, scale: 0.95 }}
+                            className="flex items-center justify-between p-4 bg-[#1a1a1a] border border-[#88c540]/5 rounded-2xl group relative overflow-hidden"
                           >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </motion.div>
-                      ))}
-                      </AnimatePresence>
+                            <div className="flex items-center gap-4 relative z-10">
+                              <div className="p-2.5 bg-[#88c540]/10 rounded-xl text-[#88c540] group-hover:scale-110 transition-transform duration-300">
+                                 {ABSENCE_ITEMS.find(i => i.value === request.type)?.icon || <Briefcase className="w-4 h-4" />}
+                              </div>
+                              <div>
+                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">{request.type}</p>
+                                <p className="text-sm font-black text-white">
+                                  {formatRange(request.startDate, request.endDate)}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => removeRequest(request.id)}
+                              className="relative z-10 p-2 text-gray-600 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            
+                            {/* Item Grid Accent */}
+                            <div className="absolute bottom-0 right-0 w-12 h-12 opacity-0 group-hover:opacity-10 transition-opacity">
+                              <div className="absolute inset-0" style={{
+                                backgroundImage: `linear-gradient(to right, #88c540 1px, transparent 1px), linear-gradient(to bottom, #88c540 1px, transparent 1px)`,
+                                backgroundSize: '8px 8px',
+                                maskImage: 'radial-gradient(circle at bottom right, black, transparent 70%)',
+                                WebkitMaskImage: 'radial-gradient(circle at bottom right, black, transparent 70%)'
+                              }} />
+                            </div>
+                          </motion.div>
+                        ))}
+                        </AnimatePresence>
+                      </motion.div>
                     </div>
-                  </div>
-                 ) : (
-                   <div className="h-full flex flex-col items-center justify-center text-center text-gray-400 p-4">
-                     <CalendarIcon className="w-12 h-12 mb-2 opacity-20" />
-                     <p className="text-sm">No dates selected yet</p>
-                   </div>
-                 )}
+                   ) : (
+                     <div className="py-20 flex flex-col items-center justify-center text-center text-gray-600">
+                       <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                         <CalendarIcon className="w-8 h-8 opacity-20" />
+                       </div>
+                       <p className="text-sm font-bold uppercase tracking-widest opacity-40">Timeline is empty</p>
+                     </div>
+                   )}
+                </div>
               </div>
 
               {/* Footer */}
-              <div className="p-5 border-t border-gray-200 bg-white">
+              <div className="relative p-6 border-t border-[#88c540]/10 bg-[#0a0a0a]/80 backdrop-blur-md">
                 <button
                   onClick={handleSendEmails}
                   disabled={requests.length === 0 || isSending}
-                  className="w-full py-3.5 bg-[#1a1a1a] hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  className="group relative w-full py-4 bg-gradient-to-r from-[#88c540] to-[#9ed958] disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed text-black font-black rounded-2xl transition-all duration-300 shadow-lg shadow-[#88c540]/20 hover:shadow-[#88c540]/40 flex items-center justify-center gap-3 overflow-hidden"
                 >
                   {isSending ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-3 border-black/30 border-t-black rounded-full animate-spin" />
                   ) : (
-                    <Send className="w-5 h-5" />
+                    <Send className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                   )}
-                  {isSending ? 'Sending...' : requests.length === 1 ? 'Send Email' : 'Send Emails'}
+                  <span className="tracking-tight uppercase">
+                    {isSending ? 'Sending Request...' : requests.length === 1 ? 'Submit Request' : `Submit ${requests.length} Requests`}
+                  </span>
                 </button>
               </div>
             </motion.div>
