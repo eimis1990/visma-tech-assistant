@@ -214,7 +214,7 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
             </span>
           </h1>
           <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 mt-6 max-w-3xl px-4 font-light leading-relaxed">
-            Get instant answers about onboarding, documents,<br className="hidden md:block" /> employees, and more
+            Get instant Visma Tech related answers about onboarding, employees, kudos and more!
           </p>
         </div>
       </div>
