@@ -58,6 +58,21 @@ const searchCategories = [
   },
 ]
 
+const handwrittenQuestions = [
+  // Left Side
+  { text: "KUDOS?", top: "20%", left: "12%", rotate: "-10deg" },
+  { text: "Vacation?", top: "35%", left: "8%", rotate: "5deg" },
+  { text: "Benefits?", top: "50%", left: "15%", rotate: "-5deg" },
+  { text: "First day?", top: "65%", left: "10%", rotate: "8deg" },
+  { text: "Equipment?", top: "80%", left: "18%", rotate: "-12deg" },
+  // Right Side
+  { text: "Office map?", top: "20%", right: "12%", rotate: "10deg" },
+  { text: "Parking?", top: "35%", right: "8%", rotate: "-5deg" },
+  { text: "Insurance?", top: "50%", right: "15%", rotate: "5deg" },
+  { text: "Work hours?", top: "65%", right: "10%", rotate: "-8deg" },
+  { text: "Sick leave?", top: "80%", right: "18%", rotate: "12deg" },
+]
+
 export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: HeroSectionProps) {
   const [isKudosPanelOpen, setIsKudosPanelOpen] = useState(false)
   const [isDocumentsPanelOpen, setIsDocumentsPanelOpen] = useState(false)
@@ -65,8 +80,7 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
   const [isRestrictedModalOpen, setIsRestrictedModalOpen] = useState(false)
   
   const badgeRef = useRef<HTMLDivElement>(null)
-  const titleRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const heroContentRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
 
@@ -88,26 +102,19 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
         delay: 0.3,
       })
       
-      // Title with split animation
-      .from(titleRef.current, {
+      // Content entrance
+      .from(heroContentRef.current, {
         y: 50,
         opacity: 0,
         duration: 1,
       }, '-=0.4')
-      
-      // Button
-      .from(buttonRef.current, {
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.6,
-      }, '-=0.5')
 
       // Subtle parallax effect on scroll for hero
-      if (titleRef.current) {
-        gsap.to(titleRef.current, {
-          y: -50,
+      if (heroContentRef.current) {
+        gsap.to(heroContentRef.current, {
+          y: -100,
           scrollTrigger: {
-            trigger: titleRef.current,
+            trigger: sectionRef.current,
             start: 'top top',
             end: 'bottom top',
             scrub: 1,
@@ -123,7 +130,7 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
         let pinWrapWidth: number
         let horizontalScrollLength: number
 
-        function refresh() {
+        const refresh = () => {
           pinWrapWidth = pinWrap.scrollWidth
           horizontalScrollLength = pinWrapWidth - window.innerWidth
           console.log('📐 Refreshing horizontal scroll:', { pinWrapWidth, horizontalScrollLength })
@@ -187,8 +194,50 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
 
   return (
     <>
-    <section className="w-full min-h-screen flex flex-col items-center justify-center relative px-4 pt-24 pb-24">
-      <div className="flex flex-col justify-center items-center w-full max-w-6xl z-50 pointer-events-auto mb-16">
+    <section 
+      ref={sectionRef}
+      className="w-full min-h-screen flex flex-col items-center justify-center relative px-4 pt-24 pb-24 overflow-hidden"
+    >
+      {/* Floating Handwritten Questions */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+        {handwrittenQuestions.map((q, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.8, rotate: q.rotate }}
+            animate={{ 
+              opacity: [0.2, 0.5, 0.2],
+              scale: [1, 1.02, 1],
+              y: [0, -10, 0],
+            }}
+            transition={{
+              duration: 5 + Math.random() * 3,
+              repeat: Infinity,
+              delay: i * 0.3,
+              ease: "easeInOut"
+            }}
+            style={{
+              position: 'absolute',
+              top: q.top,
+              left: q.left,
+              right: q.right,
+              fontFamily: "var(--font-delius), cursive",
+              color: '#88c540',
+              fontSize: 'clamp(0.9rem, 1.8vw, 1.3rem)',
+              transform: `rotate(${q.rotate})`,
+              zIndex: 10,
+              filter: 'drop-shadow(0 0 5px rgba(136, 197, 64, 0.1))',
+            }}
+            className="whitespace-nowrap transition-opacity duration-300 pointer-events-auto cursor-default select-none"
+          >
+            {q.text}
+          </motion.div>
+        ))}
+      </div>
+
+      <div 
+        ref={heroContentRef}
+        className="flex flex-col justify-center items-center w-full max-w-6xl z-50 pointer-events-auto"
+      >
         {/* AI Badge */}
         <div
           ref={badgeRef}
@@ -199,7 +248,6 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
         </div>
 
         <div
-          ref={titleRef}
           className="flex flex-col items-center justify-center gap-6 text-center max-w-7xl"
           style={{
             fontFamily:
@@ -213,30 +261,29 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
               AI Assistant
             </span>
           </h1>
-          <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 mt-6 max-w-3xl px-4 font-light leading-relaxed">
+          <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 mt-6 max-w-3xl px-4 font-normal leading-relaxed">
             Get instant Visma Tech related answers about onboarding, employees, kudos and more!
           </p>
         </div>
+
+        {/* Try Now Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ 
+            duration: 0.6, 
+            delay: 1.2,
+            ease: "easeOut"
+          }}
+          onClick={handleTryNow}
+          className="group relative flex items-center justify-between rounded-full bg-gradient-to-r from-[#88c540] to-[#9ed958] hover:from-[#7ab636] hover:to-[#88c540] pl-8 pr-3 py-4 text-black font-bold text-lg shadow-2xl shadow-[#88c540]/30 hover:shadow-[#88c540]/50 transition-all duration-300 overflow-hidden min-w-[180px] mt-12 z-50"
+        >
+          <span className="relative z-10 flex-1 text-center tracking-wide">Try Now</span>
+          <div className="relative z-10 w-10 h-10 rounded-full bg-black/20 group-hover:bg-black/30 flex items-center justify-center transition-all duration-300 flex-shrink-0">
+            <ArrowRight className="w-5 h-5 duration-300 group-hover:translate-x-1 text-black" />
+          </div>
+        </motion.button>
       </div>
-
-      {/* Try Now Button */}
-      <button
-        ref={buttonRef}
-        onClick={handleTryNow}
-        className="group relative mx-auto flex items-center justify-between rounded-full bg-gradient-to-r from-[#88c540] to-[#9ed958] hover:from-[#7ab636] hover:to-[#88c540] pl-10 pr-4 py-5 text-black font-bold text-xl shadow-2xl shadow-[#88c540]/30 hover:shadow-[#88c540]/50 transition-all duration-300 overflow-hidden min-w-[220px]"
-        onMouseEnter={(e) => {
-          gsap.to(e.currentTarget, { scale: 1.08, duration: 0.3, ease: 'power2.out' })
-        }}
-        onMouseLeave={(e) => {
-          gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: 'power2.out' })
-        }}
-      >
-        <span className="relative z-10 flex-1 text-center tracking-wide">Try Now</span>
-        <div className="relative z-10 w-12 h-12 rounded-full bg-black/20 group-hover:bg-black/30 flex items-center justify-center transition-all duration-300 flex-shrink-0">
-          <ArrowRight className="w-6 h-6 duration-300 group-hover:translate-x-1 text-black" />
-        </div>
-      </button>
-
     </section>
 
     {/* Horizontal Scroll Cards Section */}
