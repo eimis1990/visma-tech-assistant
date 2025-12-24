@@ -7,6 +7,11 @@ import { UserMenu } from '@/components/UserMenu'
 import { LogIn } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface LandingHeaderProps {
   user: User | null
@@ -31,6 +36,7 @@ const ViTechLogo = ({ className }: { className?: string }) => {
 
 export default function LandingHeader({ user, loading, onSignInClick }: LandingHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isHidden, setIsHidden] = useState(false)
   const headerRef = useRef<HTMLDivElement>(null)
   const logoRef = useRef<HTMLDivElement>(null)
   const authRef = useRef<HTMLDivElement>(null)
@@ -42,6 +48,25 @@ export default function LandingHeader({ user, loading, onSignInClick }: LandingH
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Header visibility logic - hide when approaching footer
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: "#footer-section",
+        start: "top bottom-=100", // Start hiding when footer is 100px from entering bottom
+        onEnter: () => setIsHidden(true),
+        onLeaveBack: () => setIsHidden(false),
+        // Additional check for mobile or quick scrolls
+        onUpdate: (self) => {
+          if (self.isActive && !isHidden) setIsHidden(true)
+          if (!self.isActive && isHidden) setIsHidden(false)
+        }
+      })
+    })
+
+    return () => ctx.revert()
+  }, [isHidden])
 
   // GSAP entrance animation
   useEffect(() => {
@@ -68,7 +93,8 @@ export default function LandingHeader({ user, loading, onSignInClick }: LandingH
     <header 
       ref={headerRef}
       className={cn(
-        "fixed z-50 w-full transition-all duration-300",
+        "fixed z-50 w-full transition-all duration-500",
+        isHidden ? "opacity-0 -translate-y-full pointer-events-none" : "opacity-100 translate-y-0",
         isScrolled 
           ? "bg-[#0a0a0a]/90 backdrop-blur-md border-b border-[#88c540]/10 py-4 md:bg-transparent md:border-none md:py-6 md:backdrop-blur-none" 
           : "pt-4 md:pt-6 bg-transparent"

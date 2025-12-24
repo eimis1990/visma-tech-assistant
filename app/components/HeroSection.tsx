@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles, Lock } from 'lucide-react'
+import { ArrowRight, Sparkles, Lock, ArrowDown } from 'lucide-react'
 import KudosCalculatorPanel from '@/components/KudosCalculatorPanel'
 import DocumentsPanel from '@/components/DocumentsPanel'
 import HandbookPanel from '@/components/HandbookPanel'
@@ -11,6 +11,7 @@ import { RestrictedAccessModal } from '@/components/RestrictedAccessModal'
 import { track } from '@vercel/analytics/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { CircularText } from '@/components/ui/CircularText'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -81,7 +82,8 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
   
   const badgeRef = useRef<HTMLDivElement>(null)
   const heroContentRef = useRef<HTMLDivElement>(null)
-  const sectionRef = useRef<HTMLElement>(null)
+  const heroSectionRef = useRef<HTMLElement>(null)
+  const gallerySectionRef = useRef<HTMLElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
 
   // Debug log
@@ -102,47 +104,51 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
         delay: 0.3,
       })
       
-      // Content entrance
+      // Content entrance - adding a subtle "rise up" effect that feels intentional
       .from(heroContentRef.current, {
-        y: 50,
+        y: 80, // Start lower down
         opacity: 0,
-        duration: 1,
-      }, '-=0.4')
+        duration: 1.2,
+        ease: "power4.out", // Extra smooth deceleration
+        onComplete: () => {
+          console.log('✅ Entrance Animation Complete, clearing props')
+          gsap.set(heroContentRef.current, { clearProps: "y" })
+          ScrollTrigger.refresh()
+        }
+      }, '-=0.6')
 
       // Subtle parallax effect on scroll for hero
-      if (heroContentRef.current) {
-        gsap.to(heroContentRef.current, {
-          y: -100,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 1,
+      if (heroContentRef.current && heroSectionRef.current) {
+        gsap.fromTo(heroContentRef.current, 
+          { y: 0 },
+          {
+            y: -50,
+            scrollTrigger: {
+              trigger: heroSectionRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+              invalidateOnRefresh: true,
+              immediateRender: false,
+            }
           }
-        })
+        )
       }
 
-      // Horizontal scroll effect - matching GSAP demo exactly
-      if (sectionRef.current && cardsRef.current) {
+      // Pinning and horizontal scrolling
+      if (gallerySectionRef.current && cardsRef.current) {
         const pinWrap = cardsRef.current
-        const horizontalSection = sectionRef.current
+        const horizontalSection = gallerySectionRef.current
         
         let pinWrapWidth: number
         let horizontalScrollLength: number
 
         const refresh = () => {
           pinWrapWidth = pinWrap.scrollWidth
-          horizontalScrollLength = pinWrapWidth - window.innerWidth
-          console.log('📐 Refreshing horizontal scroll:', { pinWrapWidth, horizontalScrollLength })
+          horizontalScrollLength = Math.max(0, pinWrapWidth - window.innerWidth)
         }
 
         refresh()
-        
-        // Initial refresh after a short delay to ensure layout is stable
-        setTimeout(() => {
-          refresh()
-          ScrollTrigger.refresh()
-        }, 100)
         
         // Pinning and horizontal scrolling
         gsap.to(pinWrap, {
@@ -154,10 +160,13 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
             end: () => `+=${pinWrapWidth}`,
             invalidateOnRefresh: true,
             anticipatePin: 1,
+            refreshPriority: -1,
           },
           x: () => -horizontalScrollLength,
           ease: 'none'
         })
+
+        ScrollTrigger.refresh()
 
         ScrollTrigger.addEventListener('refreshInit', refresh)
       }
@@ -195,10 +204,10 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
   return (
     <>
     <section 
-      ref={sectionRef}
-      className="w-full min-h-screen flex flex-col items-center justify-center relative px-4 pt-24 pb-24 overflow-hidden"
+      ref={heroSectionRef}
+      className="w-full min-h-screen flex flex-col items-center justify-center relative px-4 pt-20 pb-24 overflow-hidden"
     >
-      {/* Floating Handwritten Questions */}
+      {/* ... (handwritten questions logic) ... */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
         {handwrittenQuestions.map((q, i) => (
           <motion.div
@@ -221,11 +230,11 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
               left: q.left,
               right: q.right,
               fontFamily: "var(--font-delius), cursive",
-              color: '#88c540',
+              color: '#9ca3af', // gray-400 color to match the subheading
               fontSize: 'clamp(0.9rem, 1.8vw, 1.3rem)',
               transform: `rotate(${q.rotate})`,
               zIndex: 10,
-              filter: 'drop-shadow(0 0 5px rgba(136, 197, 64, 0.1))',
+              filter: 'drop-shadow(0 0 5px rgba(156, 163, 175, 0.1))',
             }}
             className="whitespace-nowrap transition-opacity duration-300 pointer-events-auto cursor-default select-none"
           >
@@ -238,13 +247,20 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
         ref={heroContentRef}
         className="flex flex-col justify-center items-center w-full max-w-6xl z-50 pointer-events-auto"
       >
-        {/* AI Badge */}
+        {/* AI Badge replaced with Circular Text */}
         <div
           ref={badgeRef}
-          className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-gradient-to-r from-[#88c540]/20 to-[#88c540]/5 border-2 border-[#88c540]/30 mb-8 backdrop-blur-sm"
+          className="mb-8"
         >
-          <Sparkles className="w-5 h-5 text-[#88c540]" />
-          <span className="text-sm font-semibold text-[#88c540] tracking-wide">VISMA TECH ASSISTANT</span>
+          <CircularText 
+            text="VISMA TECH AI ASSISTANT • GET YOUR ANSWERS NOW • "
+            radius={73}
+            fontSize={10}
+          >
+            <div className="w-14 h-14 rounded-full bg-[#88c540]/5 flex items-center justify-center border border-[#88c540]/20 shadow-[0_0_20px_rgba(136,197,64,0.1)] group cursor-pointer hover:bg-[#88c540]/10 transition-all duration-300">
+              <ArrowDown className="w-7 h-7 text-[#88c540] group-hover:translate-y-1 transition-all duration-300" />
+            </div>
+          </CircularText>
         </div>
 
         <div
@@ -288,7 +304,7 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
 
     {/* Horizontal Scroll Cards Section */}
     <section 
-      ref={sectionRef}
+      ref={gallerySectionRef}
       className="w-full h-screen flex items-center relative" 
       id="cards-section" 
       style={{ overflow: 'visible' }}
@@ -390,43 +406,44 @@ export default function HeroSection({ onOpenAbsencePanel, isVismaEmployee }: Her
     </section>
 
     {/* Footer Section */}
-    <footer className="w-full py-16 flex items-center justify-center relative bg-gradient-to-b from-[#0a0a0a] to-[#000000] border-t border-[#88c540]/10">
-      <div className="flex flex-col items-center justify-center gap-8 px-8">
-        {/* Logo */}
-        <Image
-          src="/vitech-landing-logo-white.svg"
-          alt="Vitech - Your Personal AI Assistant"
-          width={240}
-          height={67}
-          className="h-16 w-auto opacity-70 hover:opacity-100 transition-opacity"
-        />
-        
-        {/* Tagline */}
-        <p className="text-gray-500 text-base text-center max-w-xl">
-          Empowering your team with intelligent assistance
-        </p>
-        
-        {/* Links */}
-        <div className="flex gap-6 text-sm">
-          <a 
-            href="/privacy-policy" 
-            className="text-gray-500 hover:text-[#88c540] transition-colors duration-300"
-          >
-            Privacy Policy
-          </a>
-          <span className="text-gray-700">•</span>
-          <a 
-            href="/terms-of-service" 
-            className="text-gray-500 hover:text-[#88c540] transition-colors duration-300"
-          >
-            Terms of Service
-          </a>
+    <footer id="footer-section" className="w-full py-20 flex items-center justify-center relative bg-gradient-to-b from-[#0a0a0a] to-[#000000] border-t border-white/5">
+      <div className="flex flex-col items-center justify-center gap-10 px-8">
+        {/* Logo & Tagline */}
+        <div className="flex flex-col items-center gap-4">
+          <Image
+            src="/vitech-landing-logo-white.svg"
+            alt="Vitech - Your Personal AI Assistant"
+            width={240}
+            height={67}
+            className="h-14 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500"
+          />
+          <p className="text-gray-400 text-sm md:text-base text-center max-w-xl font-light tracking-wide">
+            Empowering your team with intelligent assistance
+          </p>
         </div>
         
-        {/* Copyright */}
-        <p className="text-gray-700 text-xs mt-4">
-          © 2024 Vitech. All rights reserved.
-        </p>
+        {/* Navigation & Copyright */}
+        <div className="flex flex-col items-center gap-6">
+          <div className="flex items-center gap-8 text-sm font-medium tracking-tight">
+            <a 
+              href="/privacy-policy" 
+              className="text-gray-500 hover:text-[#88c540] transition-all duration-300"
+            >
+              Privacy Policy
+            </a>
+            <div className="w-1.5 h-1.5 rounded-full bg-[#88c540]" />
+            <a 
+              href="/terms-of-service" 
+              className="text-gray-500 hover:text-[#88c540] transition-all duration-300"
+            >
+              Terms of Service
+            </a>
+          </div>
+          
+          <p className="text-white text-sm tracking-tight opacity-60">
+            © 2025 Vitech. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
 
