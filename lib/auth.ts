@@ -4,6 +4,22 @@ import type { User } from '@supabase/supabase-js'
 const ALLOWED_EMAIL_DOMAINS = ['visma.com']
 
 /**
+ * Get the base URL for redirects
+ */
+const getURL = () => {
+  let url =
+    process?.env?.NEXT_PUBLIC_APP_URL ?? // First try our custom env var
+    process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Then try Vercel's automatic env var
+    'http://localhost:3000' // Finally fallback to localhost
+  
+  // Make sure to include https:// when not on localhost
+  url = url.includes('http') ? url : `https://${url}`
+  // Make sure to remove trailing slash
+  url = url.charAt(url.length - 1) === '/' ? url.slice(0, -1) : url
+  return url
+}
+
+/**
  * Check if a user has a Visma email domain
  * This is used to restrict access to certain features
  */
@@ -22,7 +38,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/callback`,
+      redirectTo: `${getURL()}/auth/callback`,
       scopes: 'https://www.googleapis.com/auth/gmail.send',
       queryParams: {
         access_type: 'offline',
