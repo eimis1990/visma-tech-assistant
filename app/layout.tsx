@@ -27,6 +27,9 @@ const delius = Delius({
 export const metadata: Metadata = {
   title: 'Vitech Assistant',
   description: 'AI-powered RAG assistant for finding information',
+  verification: {
+    google: '09323wLa6_3cpj-ivasAIdVvlTNUtLtRlh83Jje1aq4',
+  },
 }
 
 export default function RootLayout({
