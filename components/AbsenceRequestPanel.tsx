@@ -223,45 +223,55 @@ export default function AbsenceRequestPanel({ isOpen, onClose, prefilledRequest 
 
     setIsSending(true)
 
-    const emailBodies = requests.map(req => {
-      const start = formatDateForEmail(req.startDate)
-      const end = formatDateForEmail(req.endDate)
-      
-      switch (req.type) {
-        case 'Parental Leave':
-          return `Prasau suteikti man mamadieni/tevadieni ${start}`
-        case 'Unpaid Leave':
-          return `Prasau suteikti man neapmokamas atostogas nuo ${start} iki ${end} imtinai`
-        case 'Vacation':
-        default:
-          return `Prasau suteikti man kasmetines atostogas nuo ${start} iki ${end} imtinai`
-      }
-    })
-
-    const body = emailBodies.join('\n')
-    const subject = 'Absence Request'
-
     try {
-      const response = await fetch('/api/email/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          accessToken,
-          subject,
-          body,
-          to: recipientEmail,
-        }),
-      })
+      // Send separate email for each request
+      for (let i = 0; i < requests.length; i++) {
+        const req = requests[i]
+        const start = formatDateForEmail(req.startDate)
+        const end = formatDateForEmail(req.endDate)
+        
+        // Determine subject based on type (Lithuanian)
+        let subject: string
+        let body: string
+        
+        switch (req.type) {
+          case 'Parental Leave':
+            subject = 'Tevadienis'
+            body = `Prasau suteikti man mamadieni/tevadieni ${start}`
+            break
+          case 'Unpaid Leave':
+            subject = 'Neapmokamos atostogos'
+            body = `Prasau suteikti man neapmokamas atostogas nuo ${start} iki ${end} imtinai`
+            break
+          case 'Vacation':
+          default:
+            subject = 'Atostogos'
+            body = `Prasau suteikti man kasmetines atostogas nuo ${start} iki ${end} imtinai`
+            break
+        }
 
-      const data = await response.json()
+        const response = await fetch('/api/email/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            accessToken,
+            subject,
+            body,
+            to: recipientEmail,
+          }),
+        })
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send email')
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to send email')
+        }
       }
 
-      showToast(`Email sent successfully to ${recipientEmail}!`, 'success')
+      // All emails sent successfully
+      showToast(`${requests.length} email${requests.length > 1 ? 's' : ''} sent successfully to ${recipientEmail}!`, 'success')
       setShowEmailDialog(false)
       
       track('Absence Request Sent', { 
